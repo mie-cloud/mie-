@@ -55,8 +55,8 @@ export default function CourseDetail() {
 
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
           <div className="flex items-center mb-6">
-            <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mr-6">
-              <CourseIcon className="w-8 h-8 text-blue-600" />
+            <div className="text-5xl mr-6">
+              {course.icon}
             </div>
             <h1 className="text-4xl font-bold text-gray-800">{course.title}</h1>
           </div>

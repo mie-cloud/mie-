@@ -52,8 +52,8 @@ export default function Home() {
                   className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-400 p-8 border border-gray-100 hover:border-blue-200 transform hover:-translate-y-2"
                   style={{ animationDelay: `${index * 0.15}s` }}
                 >
-                  <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
-                    <CourseIcon className="w-8 h-8 text-blue-600 group-hover:text-white" />
+                  <div className="text-5xl mb-6 group-hover:scale-110 transition-transform duration-300">
+                    {course.icon}
                   </div>
                   <h3 className="text-2xl font-bold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors">
                     {course.title}
