@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { courses } from '../data/courses';
-import { BookOpen, GraduationCap } from 'lucide-react';
+import { BookOpen, GraduationCap, Sparkles, Briefcase, Database, BarChart3 } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -22,9 +22,66 @@ export default function Home() {
           <p className="text-xl text-gray-600 mb-4 max-w-2xl mx-auto">
             广东科学技术学院 · 商学院
           </p>
-          <p className="text-lg text-green-600 font-medium bg-green-50 px-6 py-2 rounded-full inline-block">
+          <p className="text-lg text-green-600 font-medium bg-green-50 px-6 py-2 rounded-full inline-block mb-8">
             商务数据分析与应用专业
           </p>
+        </div>
+
+        {/* 个人简介 */}
+        <div className="bg-white rounded-2xl shadow-lg p-8 mb-12 border border-gray-100">
+          <div className="flex items-center mb-6">
+            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+              <Sparkles className="w-6 h-6 text-green-600" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-800">个人简介</h2>
+          </div>
+          <div className="space-y-4 text-gray-600 text-lg leading-relaxed">
+            <p>
+              你好！我是许小烁，一名就读于广东科学技术学院商学院商务数据分析与应用专业的学生。
+            </p>
+            <p>
+              我对数据分析和商业决策充满热情，通过学习 Python、数据采集、统计分析等课程，
+              掌握了将数据转化为洞察的技能。我相信数据分析能够帮助企业做出更明智的决策，
+              创造更大的价值。
+            </p>
+            <p>
+              在学习过程中，我注重理论与实践相结合，通过完成各种数据分析项目，
+              不断提升自己的专业能力。我期待在未来能够将所学知识应用于实际工作中，
+              为企业的发展贡献自己的力量。
+            </p>
+          </div>
+        </div>
+
+        {/* 技能展示 */}
+        <div className="bg-white rounded-2xl shadow-lg p-8 mb-12 border border-gray-100">
+          <div className="flex items-center mb-6">
+            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+              <BarChart3 className="w-6 h-6 text-green-600" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-800">技能展示</h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="text-center p-6 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
+              <div className="text-4xl mb-3">🐍</div>
+              <h3 className="font-bold text-gray-800 mb-2">Python编程</h3>
+              <p className="text-sm text-gray-600">掌握Python基础语法和常用库</p>
+            </div>
+            <div className="text-center p-6 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
+              <div className="text-4xl mb-3">📊</div>
+              <h3 className="font-bold text-gray-800 mb-2">数据分析</h3>
+              <p className="text-sm text-gray-600">熟练使用Pandas、NumPy等工具</p>
+            </div>
+            <div className="text-center p-6 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
+              <div className="text-4xl mb-3">🕸️</div>
+              <h3 className="font-bold text-gray-800 mb-2">数据采集</h3>
+              <p className="text-sm text-gray-600">掌握网络爬虫和API数据获取</p>
+            </div>
+            <div className="text-center p-6 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
+              <div className="text-4xl mb-3">🗄️</div>
+              <h3 className="font-bold text-gray-800 mb-2">数据库</h3>
+              <p className="text-sm text-gray-600">掌握SQL和关系型数据库</p>
+            </div>
+          </div>
         </div>
 
         <div className="mb-16">
