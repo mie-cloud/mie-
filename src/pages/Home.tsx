@@ -29,26 +29,77 @@ export default function Home() {
 
         {/* 个人简介 */}
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-12 border border-gray-100">
-          <div className="flex items-center mb-6">
-            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
-              <Sparkles className="w-6 h-6 text-green-600" />
+          <div className="flex items-center mb-8">
+            <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mr-4 shadow-lg">
+              <span className="text-3xl">✨</span>
             </div>
-            <h2 className="text-3xl font-bold text-gray-800">个人简介</h2>
+            <h2 className="text-3xl font-bold text-gray-800">关于我</h2>
           </div>
-          <div className="space-y-4 text-gray-600 text-lg leading-relaxed">
-            <p>
-              你好！我是许小烁，一名就读于广东科学技术学院商学院商务数据分析与应用专业的学生。
-            </p>
-            <p>
-              我对数据分析和商业决策充满热情，通过学习 Python、数据采集、统计分析等课程，
-              掌握了将数据转化为洞察的技能。我相信数据分析能够帮助企业做出更明智的决策，
-              创造更大的价值。
-            </p>
-            <p>
-              在学习过程中，我注重理论与实践相结合，通过完成各种数据分析项目，
-              不断提升自己的专业能力。我期待在未来能够将所学知识应用于实际工作中，
-              为企业的发展贡献自己的力量。
-            </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <div className="flex items-start">
+                <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+                  <span className="text-2xl">👋</span>
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-800 mb-2">你好呀！</h3>
+                  <p className="text-gray-600">
+                    我是许小烁，一名就读于广东科学技术学院商学院的学生，
+                    专业是商务数据分析与应用 🎓
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-start">
+                <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+                  <span className="text-2xl">💡</span>
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-800 mb-2">我的热情</h3>
+                  <p className="text-gray-600">
+                    我对数据分析和商业决策超感兴趣！通过学习 Python、数据采集、统计分析等课程，
+                    我掌握了把数据变成有用洞察的技能 📊
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="flex items-start">
+                <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+                  <span className="text-2xl">🚀</span>
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-800 mb-2">我的信念</h3>
+                  <p className="text-gray-600">
+                    我相信数据分析能帮助企业做出更聪明的决策，
+                    创造更大的价值！这真的很酷很有意义 🌟
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-start">
+                <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+                  <span className="text-2xl">🎯</span>
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-800 mb-2">我的目标</h3>
+                  <p className="text-gray-600">
+                    在学习中，我特别注重理论和实践相结合，通过完成各种数据分析项目，
+                    不断提升自己的专业能力！期待未来能把所学用到实际工作中 💪
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="mt-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+            <div className="text-center">
+              <span className="text-3xl mr-3">🌈</span>
+              <span className="text-gray-700 font-medium">让我们一起用数据创造更美好的未来吧！</span>
+              <span className="text-3xl ml-3">✨</span>
+            </div>
           </div>
         </div>
 
