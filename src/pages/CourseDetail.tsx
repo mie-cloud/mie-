@@ -363,6 +363,134 @@ export default function CourseDetail() {
                 </ul>
               </div>
             </div>
+          ) : course.id === 'python-basics' ? (
+            <div className="space-y-8">
+              <div className="p-6 bg-blue-50 rounded-xl">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">课程目标</h3>
+                <ul className="space-y-2 text-gray-600">
+                  <li className="flex items-start">
+                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    掌握 Python 编程语言的核心概念
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    熟练运用 Python 基础语法和数据结构
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    具备 Python 编程的基本能力
+                  </li>
+                </ul>
+              </div>
+
+              <div className="p-6 bg-gray-50 rounded-xl">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">课程大纲</h3>
+                <ul className="pl-6 space-y-2 text-gray-600 list-disc">
+                  <li>Python 环境搭建和基础语法</li>
+                  <li>变量、数据类型和运算符</li>
+                  <li>控制流（条件语句、循环语句）</li>
+                  <li>函数和模块</li>
+                  <li>列表、字典、元组等数据结构</li>
+                  <li>文件操作</li>
+                </ul>
+              </div>
+            </div>
+          ) : course.id === 'data-collection' ? (
+            <div className="space-y-8">
+              <div className="p-6 bg-blue-50 rounded-xl">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">课程目标</h3>
+                <ul className="space-y-2 text-gray-600">
+                  <li className="flex items-start">
+                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    掌握网络爬虫的基本原理和方法
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    学会使用 Python 进行网络数据采集
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    掌握数据清洗和预处理的基本方法
+                  </li>
+                </ul>
+              </div>
+
+              <div className="p-6 bg-gray-50 rounded-xl">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">课程大纲</h3>
+                <ul className="pl-6 space-y-2 text-gray-600 list-disc">
+                  <li>HTML 和 CSS 基础</li>
+                  <li>requests 库的使用</li>
+                  <li>BeautifulSoup 网页解析</li>
+                  <li>API 数据获取</li>
+                  <li>数据清洗和预处理</li>
+                  <li>数据存储（CSV、JSON、数据库）</li>
+                </ul>
+              </div>
+            </div>
+          ) : course.id === 'supply-chain' ? (
+            <div className="space-y-8">
+              <div className="p-6 bg-blue-50 rounded-xl">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">课程目标</h3>
+                <ul className="space-y-2 text-gray-600">
+                  <li className="flex items-start">
+                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    了解供应链管理的基本概念
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    掌握供应链数据分析的方法和工具
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    能够运用数据分析优化供应链运营
+                  </li>
+                </ul>
+              </div>
+
+              <div className="p-6 bg-gray-50 rounded-xl">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">课程大纲</h3>
+                <ul className="pl-6 space-y-2 text-gray-600 list-disc">
+                  <li>供应链管理概述</li>
+                  <li>供应链数据来源和指标</li>
+                  <li>库存分析与优化</li>
+                  <li>需求预测方法</li>
+                  <li>供应商评估与选择</li>
+                  <li>供应链可视化</li>
+                </ul>
+              </div>
+            </div>
+          ) : course.id === 'database-principles' ? (
+            <div className="space-y-8">
+              <div className="p-6 bg-blue-50 rounded-xl">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">课程目标</h3>
+                <ul className="space-y-2 text-gray-600">
+                  <li className="flex items-start">
+                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    理解数据库系统的基本原理
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    掌握关系型数据库的设计方法
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    熟练使用 SQL 语言进行数据操作
+                  </li>
+                </ul>
+              </div>
+
+              <div className="p-6 bg-gray-50 rounded-xl">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">课程大纲</h3>
+                <ul className="pl-6 space-y-2 text-gray-600 list-disc">
+                  <li>数据库系统概述</li>
+                  <li>关系模型和关系代数</li>
+                  <li>SQL 基础（查询、插入、更新、删除）</li>
+                  <li>数据库设计（ER 图、规范化）</li>
+                  <li>索引和视图</li>
+                  <li>事务和并发控制</li>
+                </ul>
+              </div>
+            </div>
           ) : (
             <div className="space-y-4">
               <div className="p-6 bg-blue-50 rounded-xl border-2 border-dashed border-blue-200">
