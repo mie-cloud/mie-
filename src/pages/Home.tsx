@@ -14,7 +14,7 @@ export default function Home() {
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="text-center mb-20 animate-fade-in">
           <div className="inline-flex items-center justify-center w-28 h-28 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mb-8 shadow-xl">
-            <span className="text-5xl">🧑‍🎓</span>
+            <span className="text-5xl">🐱</span>
           </div>
           <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-4">
             许小烁
