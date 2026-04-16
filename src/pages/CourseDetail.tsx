@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { courses } from '../data/courses';
-import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronUp, BookOpen, GraduationCap, Briefcase, Database, BarChart3, Network } from 'lucide-react';
 import { useState } from 'react';
 
 export default function CourseDetail() {
@@ -17,7 +17,7 @@ export default function CourseDetail() {
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-100 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800 mb-4">课程未找到</h1>
           <Link to="/" className="text-blue-600 hover:text-blue-800 font-medium">
@@ -28,21 +28,39 @@ export default function CourseDetail() {
     );
   }
 
+  // 根据课程类型选择不同的图标
+  let CourseIcon = BookOpen;
+  if (course.id === 'python-basics') CourseIcon = GraduationCap;
+  if (course.id === 'data-analysis') CourseIcon = BarChart3;
+  if (course.id === 'data-collection') CourseIcon = Network;
+  if (course.id === 'supply-chain') CourseIcon = Briefcase;
+  if (course.id === 'database-principles') CourseIcon = Database;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-100">
+      {/* 背景装饰 */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-20 right-20 w-80 h-80 bg-blue-300 rounded-full opacity-10 blur-3xl"></div>
+        <div className="absolute bottom-20 left-20 w-60 h-60 bg-indigo-300 rounded-full opacity-10 blur-3xl"></div>
+      </div>
+
       <div className="max-w-4xl mx-auto px-4 py-12">
         <Link
           to="/"
           className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium mb-8 transition-colors"
         >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          返回首页
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          <span className="font-medium">返回首页</span>
         </Link>
 
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-          <div className="text-6xl mb-4">{course.icon}</div>
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">{course.title}</h1>
-          <p className="text-gray-600 text-lg">{course.description}</p>
+          <div className="flex items-center mb-6">
+            <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mr-6">
+              <CourseIcon className="w-8 h-8 text-blue-600" />
+            </div>
+            <h1 className="text-4xl font-bold text-gray-800">{course.title}</h1>
+          </div>
+          <p className="text-gray-600 text-lg leading-relaxed">{course.description}</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">

@@ -1,56 +1,83 @@
 import { Link } from 'react-router-dom';
 import { courses } from '../data/courses';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, GraduationCap, Briefcase, Database, BarChart3, Network } from 'lucide-react';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-100">
+      {/* 背景装饰 */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-20 right-20 w-80 h-80 bg-blue-300 rounded-full opacity-10 blur-3xl"></div>
+        <div className="absolute bottom-20 left-20 w-60 h-60 bg-indigo-300 rounded-full opacity-10 blur-3xl"></div>
+      </div>
+
       <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full mb-6 shadow-lg">
-            <span className="text-4xl">👨‍🎓</span>
+        <div className="text-center mb-20 animate-fade-in">
+          <div className="inline-flex items-center justify-center w-28 h-28 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-full mb-8 shadow-xl">
+            <span className="text-5xl">👨‍🎓</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-4">
             许小烁
           </h1>
-          <p className="text-xl text-gray-600 mb-2">
+          <p className="text-xl text-gray-600 mb-4 max-w-2xl mx-auto">
             广东科学技术学院 · 商学院
           </p>
-          <p className="text-lg text-blue-600 font-medium">
+          <p className="text-lg text-blue-600 font-medium bg-blue-50 px-6 py-2 rounded-full inline-block">
             商务数据分析与应用专业
           </p>
         </div>
 
-        <div className="mb-12">
-          <div className="flex items-center justify-center mb-8">
-            <BookOpen className="w-6 h-6 text-blue-600 mr-3" />
-            <h2 className="text-3xl font-bold text-gray-800">我的课程</h2>
+        <div className="mb-16">
+          <div className="flex items-center justify-center mb-10">
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+              <BookOpen className="w-6 h-6 text-blue-600" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800">我的课程</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {courses.map((course, index) => (
-              <Link
-                key={course.id}
-                to={`/course/${course.id}`}
-                className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-100 hover:border-blue-200 transform hover:-translate-y-1"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                  {course.icon}
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
-                  {course.title}
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  {course.shortDesc}
-                </p>
-              </Link>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {courses.map((course, index) => {
+              // 根据课程类型选择不同的图标
+              let CourseIcon = BookOpen;
+              if (course.id === 'python-basics') CourseIcon = GraduationCap;
+              if (course.id === 'data-analysis') CourseIcon = BarChart3;
+              if (course.id === 'data-collection') CourseIcon = Network;
+              if (course.id === 'supply-chain') CourseIcon = Briefcase;
+              if (course.id === 'database-principles') CourseIcon = Database;
+
+              return (
+                <Link
+                  key={course.id}
+                  to={`/course/${course.id}`}
+                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-400 p-8 border border-gray-100 hover:border-blue-200 transform hover:-translate-y-2"
+                  style={{ animationDelay: `${index * 0.15}s` }}
+                >
+                  <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                    <CourseIcon className="w-8 h-8 text-blue-600 group-hover:text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors">
+                    {course.title}
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    {course.shortDesc}
+                  </p>
+                  <div className="inline-flex items-center text-blue-600 font-medium group-hover:text-blue-800 transition-colors">
+                    <span>查看详情</span>
+                    <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
 
-        <div className="text-center text-gray-500 text-sm mt-12">
-          <p>© 2026 许小烁 · 个人页面</p>
+        <div className="text-center text-gray-500 text-sm mt-16">
+          <p className="flex items-center justify-center">
+            <GraduationCap className="w-4 h-4 mr-2" />
+            © 2026 许小烁 · 个人页面
+          </p>
         </div>
       </div>
     </div>
