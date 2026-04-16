@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { courses } from '../data/courses';
-import { ArrowLeft, ChevronDown, ChevronUp, BookOpen, GraduationCap, Briefcase, Database, BarChart3, Network } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronUp, BookOpen } from 'lucide-react';
 import { useState } from 'react';
 
 export default function CourseDetail() {
@@ -28,26 +28,20 @@ export default function CourseDetail() {
     );
   }
 
-  // 根据课程类型选择不同的图标
-  let CourseIcon = BookOpen;
-  if (course.id === 'python-basics') CourseIcon = GraduationCap;
-  if (course.id === 'data-analysis') CourseIcon = BarChart3;
-  if (course.id === 'data-collection') CourseIcon = Network;
-  if (course.id === 'supply-chain') CourseIcon = Briefcase;
-  if (course.id === 'database-principles') CourseIcon = Database;
+  // 不再使用图标库图标，直接使用 emoji
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-100">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
       {/* 背景装饰 */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-20 right-20 w-80 h-80 bg-blue-300 rounded-full opacity-10 blur-3xl"></div>
-        <div className="absolute bottom-20 left-20 w-60 h-60 bg-indigo-300 rounded-full opacity-10 blur-3xl"></div>
+        <div className="absolute top-20 right-20 w-80 h-80 bg-green-300 rounded-full opacity-10 blur-3xl"></div>
+        <div className="absolute bottom-20 left-20 w-60 h-60 bg-emerald-300 rounded-full opacity-10 blur-3xl"></div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-12">
         <Link
           to="/"
-          className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium mb-8 transition-colors"
+          className="inline-flex items-center text-green-600 hover:text-green-800 font-medium mb-8 transition-colors"
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
           <span className="font-medium">返回首页</span>
@@ -69,27 +63,27 @@ export default function CourseDetail() {
           {course.id === 'data-analysis' ? (
             <div className="space-y-8">
               {/* 课程目标 */}
-              <div className="p-6 bg-blue-50 rounded-xl">
+              <div className="p-6 bg-green-50 rounded-xl">
                 <h3 className="text-xl font-semibold text-gray-800 mb-4">课程目标</h3>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     掌握数据分析的基本概念和方法
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     熟练使用 Pandas、NumPy 等数据分析库
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     学习数据可视化技术，使用 Matplotlib、Seaborn 等工具
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     掌握统计分析方法在商务决策中的应用
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     培养数据分析思维和解决实际商务问题的能力
                   </li>
                 </ul>
@@ -121,7 +115,7 @@ export default function CourseDetail() {
                       </ul>
                       
                       {expandedChapters['chapter1'] && (
-                        <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
                           <h5 className="font-semibold text-gray-800 mb-3">练习题</h5>
                           <ol className="pl-5 space-y-2 text-gray-600 list-decimal">
                             <li>请简述数据分析的定义和重要性。</li>
@@ -156,7 +150,7 @@ export default function CourseDetail() {
                       </ul>
                       
                       {expandedChapters['chapter2'] && (
-                        <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
                           <h5 className="font-semibold text-gray-800 mb-3">练习题</h5>
                           <ol className="pl-5 space-y-2 text-gray-600 list-decimal">
                             <li>创建一个形状为 (3, 4) 的 NumPy 数组，并填充随机值。</li>
@@ -192,7 +186,7 @@ export default function CourseDetail() {
                       </ul>
                       
                       {expandedChapters['chapter3'] && (
-                        <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
                           <h5 className="font-semibold text-gray-800 mb-3">练习题</h5>
                           <ol className="pl-5 space-y-2 text-gray-600 list-decimal">
                             <li>创建一个包含学生信息的 DataFrame，包括姓名、年龄、成绩等字段。</li>
@@ -227,7 +221,7 @@ export default function CourseDetail() {
                       </ul>
                       
                       {expandedChapters['chapter4'] && (
-                        <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
                           <h5 className="font-semibold text-gray-800 mb-3">练习题</h5>
                           <ol className="pl-5 space-y-2 text-gray-600 list-decimal">
                             <li>使用 Matplotlib 创建一个折线图，展示月度销售数据。</li>
@@ -262,7 +256,7 @@ export default function CourseDetail() {
                       </ul>
                       
                       {expandedChapters['chapter5'] && (
-                        <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
                           <h5 className="font-semibold text-gray-800 mb-3">练习题</h5>
                           <ol className="pl-5 space-y-2 text-gray-600 list-decimal">
                             <li>计算一组数据的均值、中位数、标准差等描述性统计量。</li>
@@ -297,7 +291,7 @@ export default function CourseDetail() {
                       </ul>
                       
                       {expandedChapters['chapter6'] && (
-                        <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
                           <h5 className="font-semibold text-gray-800 mb-3">练习题</h5>
                           <ol className="pl-5 space-y-2 text-gray-600 list-decimal">
                             <li>分析销售数据，找出销售趋势和季节性模式。</li>
@@ -313,23 +307,23 @@ export default function CourseDetail() {
               </div>
 
               {/* 学习方法 */}
-              <div className="p-6 bg-blue-50 rounded-xl">
+              <div className="p-6 bg-green-50 rounded-xl">
                 <h3 className="text-xl font-semibold text-gray-800 mb-4">学习方法</h3>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     理论学习与实践相结合，每章都有相应的实践练习
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     利用 Jupyter Notebook 进行代码练习和实验
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     小组合作完成数据分析项目
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     定期进行案例分析和讨论
                   </li>
                 </ul>
@@ -340,42 +334,42 @@ export default function CourseDetail() {
                 <h3 className="text-xl font-semibold text-gray-800 mb-4">评估方式</h3>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     平时作业：30%
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     实验报告：20%
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     小组项目：30%
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     期末考试：20%
                   </li>
                 </ul>
               </div>
 
               {/* 参考资料 */}
-              <div className="p-6 bg-blue-50 rounded-xl">
+              <div className="p-6 bg-green-50 rounded-xl">
                 <h3 className="text-xl font-semibold text-gray-800 mb-4">参考资料</h3>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     《Python数据分析》，Wes McKinney，机械工业出版社
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     《利用Python进行数据分析》，Wes McKinney，人民邮电出版社
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     《Python数据可视化》，Kirthi Raman，人民邮电出版社
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     在线资源：Pandas官方文档、Matplotlib官方文档
                   </li>
                 </ul>
@@ -383,19 +377,19 @@ export default function CourseDetail() {
             </div>
           ) : course.id === 'python-basics' ? (
             <div className="space-y-8">
-              <div className="p-6 bg-blue-50 rounded-xl">
+              <div className="p-6 bg-green-50 rounded-xl">
                 <h3 className="text-xl font-semibold text-gray-800 mb-4">课程目标</h3>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     掌握 Python 编程语言的核心概念
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     熟练运用 Python 基础语法和数据结构
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     具备 Python 编程的基本能力
                   </li>
                 </ul>
@@ -415,19 +409,19 @@ export default function CourseDetail() {
             </div>
           ) : course.id === 'data-collection' ? (
             <div className="space-y-8">
-              <div className="p-6 bg-blue-50 rounded-xl">
+              <div className="p-6 bg-green-50 rounded-xl">
                 <h3 className="text-xl font-semibold text-gray-800 mb-4">课程目标</h3>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     掌握网络爬虫的基本原理和方法
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     学会使用 Python 进行网络数据采集
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     掌握数据清洗和预处理的基本方法
                   </li>
                 </ul>
@@ -447,19 +441,19 @@ export default function CourseDetail() {
             </div>
           ) : course.id === 'supply-chain' ? (
             <div className="space-y-8">
-              <div className="p-6 bg-blue-50 rounded-xl">
+              <div className="p-6 bg-green-50 rounded-xl">
                 <h3 className="text-xl font-semibold text-gray-800 mb-4">课程目标</h3>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     了解供应链管理的基本概念
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     掌握供应链数据分析的方法和工具
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     能够运用数据分析优化供应链运营
                   </li>
                 </ul>
@@ -479,19 +473,19 @@ export default function CourseDetail() {
             </div>
           ) : course.id === 'database-principles' ? (
             <div className="space-y-8">
-              <div className="p-6 bg-blue-50 rounded-xl">
+              <div className="p-6 bg-green-50 rounded-xl">
                 <h3 className="text-xl font-semibold text-gray-800 mb-4">课程目标</h3>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     理解数据库系统的基本原理
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     掌握关系型数据库的设计方法
                   </li>
                   <li className="flex items-start">
-                    <span className="text-blue-600 font-bold mr-2">•</span>
+                    <span className="text-green-600 font-bold mr-2">•</span>
                     熟练使用 SQL 语言进行数据操作
                   </li>
                 </ul>
