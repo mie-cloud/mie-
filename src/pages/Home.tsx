@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { courses } from '../data/courses';
-import { BookOpen, GraduationCap, Sparkles, BarChart3, Target, TrendingUp, Users, Star, ArrowRight, CheckCircle, Code, Database, LineChart, ShoppingCart, Award, MessageCircle } from 'lucide-react';
+import { BookOpen, GraduationCap, Sparkles, BarChart3, Target, TrendingUp, Users, Star, ArrowRight, CheckCircle, Code, Database, LineChart, ShoppingCart, Award, MessageCircle, User } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -105,10 +105,81 @@ const learningPaths = [
   }
 ];
 
+const skills = [
+  { icon: '🐍', name: 'Python编程', desc: '掌握Python基础语法和常用库' },
+  { icon: '📊', name: '数据分析', desc: '熟练使用Pandas、NumPy等工具' },
+  { icon: '🕸️', name: '数据采集', desc: '掌握网络爬虫和API数据获取' },
+  { icon: '🗄️', name: '数据库', desc: '掌握SQL和关系型数据库' }
+];
+
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
       <Navbar />
+      
+      {/* Personal Introduction */}
+      <section className="py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+            <div className="inline-flex items-center justify-center w-28 h-28 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mb-6 shadow-xl">
+              <span className="text-5xl">🐑</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+              许小烁
+            </h1>
+            <p className="text-xl text-gray-600 mb-4">
+              广东科学技术学院 · 商学院
+            </p>
+            <p className="text-lg text-green-600 font-medium bg-green-50 px-6 py-2 rounded-full inline-block mb-8">
+              商务数据分析与应用专业
+            </p>
+            
+            {/* Personal Description */}
+            <div className="space-y-4 text-gray-600 text-lg leading-relaxed text-left max-w-2xl mx-auto">
+              <p>
+                👋 嗨！我是许小烁，一个对数据充满好奇的大二学生，就读于广东科学技术学院商学院。
+                我的专业是商务数据分析与应用，简单来说就是用数据讲故事的魔法师！
+              </p>
+              <p>
+                🐍 我每天和Python打交道，和Pandas、NumPy做朋友，喜欢从一堆混乱的数据中找出隐藏的规律。
+                想象一下，把枯燥的数字变成漂亮的图表，再从中发现商机，这是不是超酷的事情？
+              </p>
+              <p>
+                📊 除了敲代码，我还喜欢爬爬网页收集数据，用SQL在数据库里寻宝，
+                甚至会用数据预测一下奶茶店的销量趋势（这可是实战经验哦！）。
+              </p>
+              <p>
+                🌟 我的目标是成为一名数据分析师，用数据帮助企业做出聪明的决策。
+                虽然现在还是个小萌新，但我相信通过不断学习和实践，
+                未来一定能成为数据世界的超级英雄！
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Skills Display */}
+      <section className="py-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-center mb-8">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                <BarChart3 className="w-6 h-6 text-green-600" />
+              </div>
+              <h2 className="text-3xl font-bold text-gray-800">技能展示</h2>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {skills.map((skill, index) => (
+                <div key={index} className="text-center p-6 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
+                  <div className="text-4xl mb-3">{skill.icon}</div>
+                  <h3 className="font-bold text-gray-800 mb-2">{skill.name}</h3>
+                  <p className="text-sm text-gray-600">{skill.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-20">
@@ -293,7 +364,7 @@ export default function Home() {
         </div>
       </section>
       
-      {/* Courses Section - Original Content */}
+      {/* Courses Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center mb-12">
