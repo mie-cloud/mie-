@@ -4,6 +4,7 @@ import CourseDetail from './pages/CourseDetail';
 import ProjectsPage from './pages/ProjectsPage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 import PracticePage from './pages/PracticePage';
+import PracticeQuizPage from './pages/PracticeQuizPage';
 import WrongAnswersPage from './pages/WrongAnswersPage';
 import PlanPage from './pages/PlanPage';
 import LeaderboardPage from './pages/LeaderboardPage';
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/project/:id" element={<ProjectDetailPage />} />
         <Route path="/practice" element={<PracticePage />} />
+        <Route path="/practice/quiz" element={<PracticeQuizPage />} />
         <Route path="/wrong-answers" element={<WrongAnswersPage />} />
         <Route path="/plan" element={<PlanPage />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />

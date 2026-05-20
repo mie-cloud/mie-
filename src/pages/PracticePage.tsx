@@ -179,9 +179,9 @@ export default function PracticePage() {
                 快速练习
               </h3>
               <p className="text-green-100 mb-6">今天还没有练习，开始你的每日练习吧！</p>
-              <button className="w-full bg-white text-green-600 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors">
+              <Link to="/practice/quiz" className="w-full bg-white text-green-600 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors flex items-center justify-center">
                 开始练习
-              </button>
+              </Link>
             </div>
             
             {/* Recent Practice */}
