@@ -114,18 +114,69 @@ export default function CourseDetail() {
     const code = exerciseAnswers[key]?.codeAnswer || '';
     let output = '';
     let isCorrect = false;
+    const errors: string[] = [];
 
-    if (exercise.expectedOutput) {
-      const mockOutput = simulateCodeExecution(code);
-      output = mockOutput.output;
-      isCorrect = mockOutput.isCorrect(exercise.expectedOutput);
-      if (!isCorrect) {
-        output = `❌ 输出不匹配\n\n你的输出:\n${output || '(无输出)'}\n\n期望输出:\n${exercise.expectedOutput}`;
-      }
+    // 首先进行严格的语法检查
+    if (!code || code.trim().length === 0) {
+      errors.push("代码不能为空");
+      isCorrect = false;
     } else {
-      const validation = validateCodeStructure(code);
-      isCorrect = validation.isValid;
-      output = validation.message;
+      // 检查括号匹配
+      const checkBalanced = (open: string, close: string) => {
+        let count = 0;
+        for (let i = 0; i < code.length; i++) {
+          if (code[i] === open) count++;
+          if (code[i] === close) count--;
+          if (count < 0) return false;
+        }
+        return count === 0;
+      };
+
+      if (!checkBalanced("(", ")")) errors.push("括号()不匹配");
+      if (!checkBalanced("{", "}")) errors.push("花括号{}不匹配");
+      if (!checkBalanced("[", "]")) errors.push("方括号[]不匹配");
+      
+      // 检查引号匹配 - 更智能的检测
+      let inQuote = null;
+      for (let i = 0; i < code.length; i++) {
+        const char = code[i];
+        if (char === '"' && inQuote === null) {
+          inQuote = '"';
+        } else if (char === '"' && inQuote === '"') {
+          inQuote = null;
+        } else if (char === "'" && inQuote === null) {
+          inQuote = "'";
+        } else if (char === "'" && inQuote === "'") {
+          inQuote = null;
+        }
+      }
+      
+      if (inQuote === '"') errors.push("双引号\"不匹配（缺少结束引号）");
+      if (inQuote === "'") errors.push("单引号'不匹配（缺少结束引号）");
+
+      // 如果有语法错误，直接返回错误
+      if (errors.length > 0) {
+        output = "❌ 语法错误！\n\n代码检查发现以下问题：\n\n";
+        errors.forEach(err => output += "• " + err + "\n");
+        output += "\n请修复错误后重新运行。";
+        isCorrect = false;
+      } else {
+        // 语法检查通过后，再检查输出
+        if (exercise.expectedOutput) {
+          const mockOutput = simulateCodeExecution(code);
+          output = mockOutput.output;
+          isCorrect = mockOutput.isCorrect(exercise.expectedOutput);
+          if (!isCorrect) {
+            output = `❌ 输出不匹配\n\n你的输出:\n${output || '(无输出)'}\n\n期望输出:\n${exercise.expectedOutput}`;
+          } else {
+            output = "✅ 代码执行正确！\n\n输出结果：\n" + output;
+          }
+        } else {
+          const validation = validateCodeStructure(code);
+          isCorrect = validation.isValid;
+          output = validation.message;
+        }
+      }
     }
 
     setExerciseAnswers(prev => ({
