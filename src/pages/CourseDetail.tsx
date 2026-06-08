@@ -202,7 +202,7 @@ export default function CourseDetail() {
                         <div className="mt-6 p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200">
                           <h5 className="font-bold text-gray-900 mb-4 flex items-center text-lg">
                             <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
-                            练习题
+                            练习题 📝 （选择答案后点击"提交答案"按钮）
                           </h5>
                           <ol className="pl-6 space-y-6 text-gray-700">
                             {chapter.exercises.map((exercise, idx) => {
@@ -217,42 +217,44 @@ export default function CourseDetail() {
                                         const isSelected = exerciseState.selectedAnswer === optIdx;
                                         const showResult = exerciseState.showResult;
                                         
-                                        let optionClass = 'border-gray-200 hover:border-green-300';
+                                        let optionClass = 'border-gray-200 hover:border-green-400 hover:bg-green-50';
                                         if (showResult) {
                                           if (isCorrect) {
-                                            optionClass = 'border-green-500 bg-green-50';
+                                            optionClass = 'border-green-600 bg-green-100 shadow-md';
                                           } else if (isSelected && !isCorrect) {
-                                            optionClass = 'border-red-500 bg-red-50';
+                                            optionClass = 'border-red-600 bg-red-100 shadow-md';
                                           } else {
                                             optionClass = 'border-gray-200 opacity-50';
                                           }
+                                        } else if (isSelected) {
+                                          optionClass = 'border-green-500 bg-green-50 shadow-sm';
                                         }
                                         
                                         return (
-                                          <div key={optIdx} className={`flex items-center p-3 rounded-lg border-2 ${optionClass} cursor-pointer transition-colors`}
+                                          <div key={optIdx} className={`flex items-center p-4 rounded-xl border-2 ${optionClass} cursor-pointer transition-all duration-200`}
                                             onClick={() => !showResult && handleSelectAnswer(chapter.id, idx, optIdx)}>
-                                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-3 flex-shrink-0 ${
-                                              showResult && isCorrect ? 'bg-green-500 border-green-500' :
-                                              showResult && isSelected && !isCorrect ? 'bg-red-500 border-red-500' :
-                                              isSelected ? 'bg-green-500 border-green-500' :
-                                              'border-gray-300'
+                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mr-4 flex-shrink-0 ${
+                                              showResult && isCorrect ? 'bg-green-600 border-green-600' :
+                                              showResult && isSelected && !isCorrect ? 'bg-red-600 border-red-600' :
+                                              isSelected ? 'bg-green-600 border-green-600' :
+                                              'border-gray-400 hover:border-green-500'
                                             }`}>
                                               {(showResult && isCorrect) || isSelected ? (
-                                                <CheckCircle className="w-3 h-3 text-white" />
+                                                <CheckCircle className="w-4 h-4 text-white" />
                                               ) : showResult && isSelected && !isCorrect ? (
-                                                <XCircle className="w-3 h-3 text-white" />
+                                                <XCircle className="w-4 h-4 text-white" />
                                               ) : null}
                                             </div>
-                                            <span className={`${
-                                              showResult && isCorrect ? 'text-green-700 font-medium' :
-                                              showResult && isSelected && !isCorrect ? 'text-red-700 line-through' :
-                                              showResult ? 'text-gray-400' :
-                                              'text-gray-700'
+                                            <span className={`text-lg ${
+                                              showResult && isCorrect ? 'text-green-800 font-bold' :
+                                              showResult && isSelected && !isCorrect ? 'text-red-800 font-medium line-through' :
+                                              showResult ? 'text-gray-500' :
+                                              'text-gray-800'
                                             }`}>
                                               {option}
                                             </span>
                                             {showResult && isCorrect && (
-                                              <span className="ml-auto text-green-600 text-sm font-medium">正确答案</span>
+                                              <span className="ml-auto text-green-700 font-bold text-base">✅ 正确答案</span>
                                             )}
                                           </div>
                                         );
@@ -271,9 +273,9 @@ export default function CourseDetail() {
                                       {!exerciseState.showResult ? (
                                         <button 
                                           onClick={() => handleSubmitAnswer(chapter.id, idx)}
-                                          className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+                                          className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-700 text-white rounded-xl font-bold hover:shadow-lg hover:from-green-700 hover:to-emerald-800 transition-all text-lg"
                                         >
-                                          提交答案
+                                          ✓ 提交答案
                                         </button>
                                       ) : (
                                         <>
@@ -290,9 +292,9 @@ export default function CourseDetail() {
                                           )}
                                           <button 
                                             onClick={() => resetAnswer(chapter.id, idx)}
-                                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                                            className="px-6 py-3 bg-gray-200 text-gray-800 rounded-xl font-bold hover:bg-gray-300 transition-all"
                                           >
-                                            重新答题
+                                            🔄 重新答题
                                           </button>
                                         </>
                                       )}
