@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { courses } from '../data/courses';
-import { ArrowLeft, ChevronDown, ChevronUp, BookOpen, Book, BarChart3, FileText, CheckCircle, Code, ListChecks, Clock, Award, Target, Users } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronUp, BookOpen, Book, BarChart3, FileText, CheckCircle, XCircle, Code, ListChecks, Clock, Award, Target, Users } from 'lucide-react';
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -9,12 +9,47 @@ export default function CourseDetail() {
   const { id } = useParams<{ id: string }>();
   const course = courses.find(c => c.id === id);
   const [expandedChapters, setExpandedChapters] = useState<Record<string, boolean>>({});
+  const [exerciseAnswers, setExerciseAnswers] = useState<Record<string, { selectedAnswer: number | null; showResult: boolean }>>({});
 
   const toggleChapter = (chapter: string) => {
     setExpandedChapters(prev => ({
       ...prev,
       [chapter]: !prev[chapter]
     }));
+  };
+
+  const getExerciseKey = (chapterId: string, exerciseIdx: number) => `${chapterId}-${exerciseIdx}`;
+
+  const handleSelectAnswer = (chapterId: string, exerciseIdx: number, answerIdx: number) => {
+    const key = getExerciseKey(chapterId, exerciseIdx);
+    setExerciseAnswers(prev => ({
+      ...prev,
+      [key]: { selectedAnswer: answerIdx, showResult: prev[key]?.showResult || false }
+    }));
+  };
+
+  const handleSubmitAnswer = (chapterId: string, exerciseIdx: number) => {
+    const key = getExerciseKey(chapterId, exerciseIdx);
+    const current = exerciseAnswers[key];
+    if (current?.selectedAnswer !== null) {
+      setExerciseAnswers(prev => ({
+        ...prev,
+        [key]: { ...current, showResult: true }
+      }));
+    }
+  };
+
+  const resetAnswer = (chapterId: string, exerciseIdx: number) => {
+    const key = getExerciseKey(chapterId, exerciseIdx);
+    setExerciseAnswers(prev => ({
+      ...prev,
+      [key]: { selectedAnswer: null, showResult: false }
+    }));
+  };
+
+  const getExerciseState = (chapterId: string, exerciseIdx: number) => {
+    const key = getExerciseKey(chapterId, exerciseIdx);
+    return exerciseAnswers[key] || { selectedAnswer: null, showResult: false };
   };
 
   if (!course) {
@@ -170,35 +205,102 @@ export default function CourseDetail() {
                             练习题
                           </h5>
                           <ol className="pl-6 space-y-6 text-gray-700">
-                            {chapter.exercises.map((exercise, idx) => (
-                              <li key={idx} className="bg-white p-4 rounded-lg border border-gray-100">
-                                <p className="font-semibold mb-3 text-gray-900">{exercise.question}</p>
-                                {exercise.type === 'multiple-choice' && exercise.options && (
-                                  <div className="pl-2 space-y-2">
-                                    {exercise.options.map((option, optIdx) => (
-                                      <div key={optIdx} className="flex items-center">
-                                        <input 
-                                          type="radio" 
-                                          name={`exercise-${chapter.id}-${idx}`} 
-                                          id={`option-${chapter.id}-${idx}-${optIdx}`} 
-                                          className="mr-3 text-green-600"
-                                        />
-                                        <label htmlFor={`option-${chapter.id}-${idx}-${optIdx}`} className="cursor-pointer">
-                                          {option}
-                                        </label>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                                {exercise.type === 'code' && exercise.codeTemplate && (
-                                  <div className="mt-3">
-                                    <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto">
-                                      <code>{exercise.codeTemplate}</code>
-                                    </pre>
-                                  </div>
-                                )}
-                              </li>
-                            ))}
+                            {chapter.exercises.map((exercise, idx) => {
+                              const exerciseState = getExerciseState(chapter.id, idx);
+                              return (
+                                <div key={idx} className="bg-white p-4 rounded-lg border border-gray-100">
+                                  <p className="font-semibold mb-3 text-gray-900">{exercise.question}</p>
+                                  {exercise.type === 'multiple-choice' && exercise.options && (
+                                    <div className="pl-2 space-y-2">
+                                      {exercise.options.map((option, optIdx) => {
+                                        const isCorrect = option === exercise.correctAnswer;
+                                        const isSelected = exerciseState.selectedAnswer === optIdx;
+                                        const showResult = exerciseState.showResult;
+                                        
+                                        let optionClass = 'border-gray-200 hover:border-green-300';
+                                        if (showResult) {
+                                          if (isCorrect) {
+                                            optionClass = 'border-green-500 bg-green-50';
+                                          } else if (isSelected && !isCorrect) {
+                                            optionClass = 'border-red-500 bg-red-50';
+                                          } else {
+                                            optionClass = 'border-gray-200 opacity-50';
+                                          }
+                                        }
+                                        
+                                        return (
+                                          <div key={optIdx} className={`flex items-center p-3 rounded-lg border-2 ${optionClass} cursor-pointer transition-colors`}
+                                            onClick={() => !showResult && handleSelectAnswer(chapter.id, idx, optIdx)}>
+                                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-3 flex-shrink-0 ${
+                                              showResult && isCorrect ? 'bg-green-500 border-green-500' :
+                                              showResult && isSelected && !isCorrect ? 'bg-red-500 border-red-500' :
+                                              isSelected ? 'bg-green-500 border-green-500' :
+                                              'border-gray-300'
+                                            }`}>
+                                              {(showResult && isCorrect) || isSelected ? (
+                                                <CheckCircle className="w-3 h-3 text-white" />
+                                              ) : showResult && isSelected && !isCorrect ? (
+                                                <XCircle className="w-3 h-3 text-white" />
+                                              ) : null}
+                                            </div>
+                                            <span className={`${
+                                              showResult && isCorrect ? 'text-green-700 font-medium' :
+                                              showResult && isSelected && !isCorrect ? 'text-red-700 line-through' :
+                                              showResult ? 'text-gray-400' :
+                                              'text-gray-700'
+                                            }`}>
+                                              {option}
+                                            </span>
+                                            {showResult && isCorrect && (
+                                              <span className="ml-auto text-green-600 text-sm font-medium">正确答案</span>
+                                            )}
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  )}
+                                  {exercise.type === 'code' && exercise.codeTemplate && (
+                                    <div className="mt-3">
+                                      <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto">
+                                        <code>{exercise.codeTemplate}</code>
+                                      </pre>
+                                    </div>
+                                  )}
+                                  {exercise.type === 'multiple-choice' && (
+                                    <div className="mt-4 flex items-center justify-between">
+                                      {!exerciseState.showResult ? (
+                                        <button 
+                                          onClick={() => handleSubmitAnswer(chapter.id, idx)}
+                                          className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+                                        >
+                                          提交答案
+                                        </button>
+                                      ) : (
+                                        <>
+                                          {exercise.options && exercise.options[exerciseState.selectedAnswer] === exercise.correctAnswer ? (
+                                            <div className="flex items-center text-green-600">
+                                              <CheckCircle className="w-5 h-5 mr-2" />
+                                              <span className="font-medium">回答正确！</span>
+                                            </div>
+                                          ) : (
+                                            <div className="flex items-center text-red-600">
+                                              <XCircle className="w-5 h-5 mr-2" />
+                                              <span className="font-medium">回答错误</span>
+                                            </div>
+                                          )}
+                                          <button 
+                                            onClick={() => resetAnswer(chapter.id, idx)}
+                                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                                          >
+                                            重新答题
+                                          </button>
+                                        </>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
                           </ol>
                         </div>
                       )}
