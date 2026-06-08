@@ -458,13 +458,100 @@ export default function ProjectDetailPage() {
 
     setTimeout(() => {
       let output = "";
-      let isCorrect = false;
+      let isCorrect = true;
+      let errors: string[] = [];
 
       try {
-        output = "代码执行模拟完成！\n\n在实际环境中，这里会显示真实的执行结果。\n\n提示：建议使用真实的Python环境来运行代码。";
-        isCorrect = code.length > 50;
+        // 基本语法检查
+        if (!code || code.trim().length === 0) {
+          errors.push("代码不能为空");
+          isCorrect = false;
+        } else {
+          // 检查括号匹配
+          const checkBalanced = (open: string, close: string) => {
+            let count = 0;
+            for (let i = 0; i < code.length; i++) {
+              if (code[i] === open) count++;
+              if (code[i] === close) count--;
+              if (count < 0) return false;
+            }
+            return count === 0;
+          };
+
+          if (!checkBalanced("(", ")")) errors.push("括号()不匹配");
+          if (!checkBalanced("{", "}")) errors.push("花括号{}不匹配");
+          if (!checkBalanced("[", "]")) errors.push("方括号[]不匹配");
+          
+          // 检查引号匹配
+          const singleQuotes = (code.match(/'/g) || []).length;
+          const doubleQuotes = (code.match(/"/g) || []).length;
+          if (singleQuotes % 2 !== 0) errors.push("单引号不匹配");
+          if (doubleQuotes % 2 !== 0) errors.push("双引号不匹配");
+
+          // 检查与示范代码的匹配度（如果有示范代码）
+          if (exercise.codeTemplate) {
+            const templateCode = exercise.codeTemplate.trim();
+            const userCode = code.trim();
+            
+            // 计算相似度 - 简单的方法是比较关键字段
+            const extractKeywords = (s: string) => s.toLowerCase().replace(/\s+/g, "");
+            const templateKeywords = extractKeywords(templateCode);
+            const userKeywords = extractKeywords(userCode);
+            
+            // 检查示范代码中的关键内容是否在用户代码中出现
+            let missingCount = 0;
+            const keyElements = templateKeywords.slice(0, 50); // 取前50个字符做比较
+            for (let i = 0; i < keyElements.length && i < userKeywords.length; i++) {
+              if (keyElements[i] !== userKeywords[i]) missingCount++;
+            }
+
+            // 如果示范代码有 print，检查用户是否也有
+            if (templateCode.toLowerCase().includes("print") && !userCode.toLowerCase().includes("print")) {
+              errors.push("缺少 print 语句");
+            }
+
+            // 如果有明显错误，标记为不正确
+            if (errors.length === 0) {
+              // 检查代码是否包含了示范代码的核心逻辑
+              const templateLines = templateCode.split("\n").filter(l => l.trim());
+              const userLines = userCode.split("\n").filter(l => l.trim());
+              let matchCount = 0;
+              
+              for (let tLine of templateLines) {
+                for (let uLine of userLines) {
+                  const cleanTL = tLine.toLowerCase().replace(/\s+/g, "");
+                  const cleanUL = uLine.toLowerCase().replace(/\s+/g, "");
+                  if (cleanUL.includes(cleanTL.slice(0, 10)) || cleanTL.includes(cleanUL.slice(0, 10))) {
+                    matchCount++;
+                    break;
+                  }
+                }
+              }
+              
+              if (matchCount < templateLines.length * 0.5) {
+                errors.push("代码与示范代码差异较大，请参考示范代码");
+              }
+            }
+          } else {
+            // 如果没有示范代码，简单检查一些常见问题
+            if (code.trim().length < 10) {
+              errors.push("代码太短，可能不完整");
+            }
+          }
+        }
+
+        if (errors.length > 0) {
+          output = "代码检查发现以下问题：\n\n";
+          errors.forEach(err => output += "❌ " + err + "\n");
+          output += "\n请参考示范代码进行修改后重新运行。";
+          isCorrect = false;
+        } else {
+          output = "✅ 代码检查通过！\n\n在实际环境中，这里会显示代码的执行输出结果。";
+          isCorrect = true;
+        }
       } catch (error) {
-        output = `错误: ${(error as Error).message}`;
+        output = `分析错误: ${(error as Error).message}`;
+        isCorrect = false;
       }
 
       setCodeOutput(prev => ({ ...prev, [key]: output }));
