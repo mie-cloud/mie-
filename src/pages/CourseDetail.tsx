@@ -166,16 +166,61 @@ export default function CourseDetail() {
 
   const resetCode = (chapterId: string, exerciseIdx: number) => {
     const key = getExerciseKey(chapterId, exerciseIdx);
+    const exercise = course?.chapters.find(c => c.id === chapterId)?.exercises[exerciseIdx];
+    const defaultCode = exercise?.codeTemplate || '';
     setExerciseAnswers(prev => ({
       ...prev,
       [key]: {
         ...prev[key],
-        codeAnswer: '',
+        codeAnswer: defaultCode,
         codeShowResult: false,
         codeIsCorrect: false,
         codeOutput: ''
       }
     }));
+  };
+
+  const getChapterContent = (chapterId: string, contentIdx: number): string => {
+    const contentMap: Record<string, string[]> = {
+      'chapter1': [
+        'Python 是一种高级、解释型、面向对象的编程语言。它由 Guido van Rossum 在 1989 年创造，以简洁的语法和强大的功能著称。安装 Python 非常简单，只需从官方网站下载对应版本的安装包即可。',
+        'IDE（集成开发环境）是编写 Python 代码的重要工具。常用的 IDE 有 PyCharm、VS Code、Spyder 等。配置好 IDE 后，可以提高编码效率和调试能力。',
+        'Python 的基本语法包括变量定义、数据类型、运算符等。Python 使用缩进来表示代码块，这是它的一大特色。代码结构清晰易读。',
+        '注释是代码中非常重要的部分，用于解释代码的功能。单行注释使用 # 开头，多行注释使用三个引号包裹。良好的代码风格可以提高代码的可读性和可维护性。'
+      ],
+      'chapter2': [
+        '变量是存储数据的容器。在 Python 中，不需要声明变量类型，直接赋值即可。变量名可以包含字母、数字和下划线，但不能以数字开头。',
+        'Python 的基本数据类型包括整数(int)、浮点数(float)、字符串(str)和布尔值(bool)。不同的数据类型有不同的用途和操作方法。',
+        '运算符包括算术运算符(+、-、*、/)、比较运算符(==、!=、>、<)和逻辑运算符(and、or、not)。这些运算符用于进行各种计算和判断。',
+        '类型转换可以将一种数据类型转换为另一种。常用的转换函数有 int()、float()、str()、bool() 等。需要注意类型转换的规则和可能的错误。'
+      ],
+      'chapter3': [
+        'if 语句用于根据条件执行不同的代码块。可以使用 if、elif、else 来处理多个条件分支。条件表达式返回布尔值。',
+        'for 循环用于遍历序列（如列表、字符串等）。range() 函数可以生成一系列数字，常用于控制循环次数。',
+        'while 循环会一直执行，直到条件变为 False。需要注意避免无限循环，确保循环条件最终会变为 False。',
+        'break 语句用于跳出循环，continue 语句用于跳过当前迭代继续下一次循环。这些控制语句可以帮助我们更灵活地控制循环流程。'
+      ],
+      'chapter4': [
+        '函数是一段可重用的代码块。使用 def 关键字定义函数，可以接收参数并返回结果。函数可以提高代码的复用性和可读性。',
+        '函数可以有参数和返回值。参数分为位置参数、关键字参数和默认参数。返回值使用 return 语句返回。',
+        '模块是组织代码的方式，可以将相关的函数和变量放在一个文件中。使用 import 语句导入模块，可以使用模块中的功能。',
+        'Python 提供了丰富的内置函数和标准库。内置函数如 print()、len()、max() 等可以直接使用，标准库如 math、random 等需要导入后使用。'
+      ],
+      'chapter5': [
+        '列表是可变的有序序列，可以存储不同类型的元素。常用操作包括添加元素(append)、删除元素(remove)、排序(sort)等。',
+        '字典是键值对的无序集合。可以通过键来访问值，键必须是不可变的（如字符串、数字、元组）。字典的常用操作包括添加、修改、删除键值对。',
+        '元组是不可变的有序序列。与列表类似，但一旦创建就不能修改。常用于存储不应该改变的数据。',
+        '集合是无序且不重复的元素集合。常用操作包括求交集(&)、并集(|)、差集(-)等。集合可以用于去重和集合运算。'
+      ],
+      'chapter6': [
+        '文件操作包括打开、读取、写入和关闭文件。使用 open() 函数打开文件，使用 close() 函数关闭文件。',
+        '文件读取可以使用 read()、readline()、readlines() 等方法。文件写入可以使用 write()、writelines() 等方法。',
+        '异常处理可以捕获和处理程序运行过程中的错误。使用 try-except 语句可以优雅地处理异常，避免程序崩溃。',
+        'with 语句可以自动管理文件的打开和关闭，是一种更安全、更简洁的文件操作方式。with 语句块结束时会自动关闭文件。'
+      ]
+    };
+    
+    return contentMap[chapterId]?.[contentIdx] || '暂无详细内容';
   };
 
   if (!course) {
@@ -241,9 +286,9 @@ export default function CourseDetail() {
             </div>
             
             <div className="bg-white text-gray-900 rounded-2xl p-6 shadow-2xl">
-              <button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 rounded-xl font-bold text-lg hover:shadow-lg transition-all mb-4">
+              <a href="#course-outline" className="block w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 rounded-xl font-bold text-lg hover:shadow-lg transition-all mb-4 text-center">
                 开始学习
-              </button>
+              </a>
               <button className="w-full border-2 border-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all">
                 加入收藏
               </button>
@@ -325,11 +370,27 @@ export default function CourseDetail() {
                       </ul>
                       
                       {expandedChapters[chapter.id] && (
-                        <div className="mt-6 p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200">
-                          <h5 className="font-bold text-gray-900 mb-4 flex items-center text-lg">
-                            <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
-                            练习题 📝 （选择答案后点击"提交答案"按钮）
-                          </h5>
+                        <div className="mt-6 space-y-6">
+                          <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                            <h5 className="font-bold text-gray-900 mb-4 flex items-center text-lg">
+                              <BookOpen className="w-5 h-5 mr-2 text-blue-600" />
+                              📚 知识点讲解
+                            </h5>
+                            <div className="space-y-4 text-gray-700">
+                              {chapter.content.map((item, idx) => (
+                                <div key={idx} className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
+                                  <h6 className="font-semibold text-blue-800 mb-2">知识点 {idx + 1}：{item}</h6>
+                                  <p className="text-sm text-gray-600">{getChapterContent(chapter.id, idx)}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          
+                          <div className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                            <h5 className="font-bold text-gray-900 mb-4 flex items-center text-lg">
+                              <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
+                              练习题 📝 （选择答案后点击"提交答案"按钮）
+                            </h5>
                           <ol className="pl-6 space-y-6 text-gray-700">
                             {chapter.exercises.map((exercise, idx) => {
                               const exerciseState = getExerciseState(chapter.id, idx);
@@ -397,6 +458,12 @@ export default function CourseDetail() {
                                           </span>
                                         )}
                                       </div>
+                                      {exercise.codeTemplate && (
+                                        <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                          <span className="text-sm font-semibold text-blue-800">📋 示范代码：</span>
+                                          <pre className="mt-2 text-sm text-gray-700 font-mono bg-white p-3 rounded border border-gray-200 overflow-x-auto">{exercise.codeTemplate}</pre>
+                                        </div>
+                                      )}
                                       <textarea
                                         value={exerciseState.codeAnswer || ''}
                                         onChange={(e) => handleCodeChange(chapter.id, idx, e.target.value)}
@@ -480,6 +547,7 @@ export default function CourseDetail() {
                             })}
                           </ol>
                         </div>
+                      </div>
                       )}
                     </div>
                   </div>
