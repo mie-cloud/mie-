@@ -1,321 +1,437 @@
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Database, Clock, Users, Star, Award, Target, CheckCircle, PlayCircle, Download, Share2, BookOpen, Code, ChevronDown, ChevronRight, Copy, Check, Terminal, XCircle, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Database, LineChart, ShoppingCart, Target, Users, Star, Award, CheckCircle, PlayCircle, Download, BookOpen, Code, ChevronDown, ChevronRight, Copy, Check, Terminal, XCircle, AlertCircle, Globe, FileText, BarChart3 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-const projectsData = {
+const projectsData: Record<number, any> = {
   1: {
     id: 1,
     title: '零售业销售数据清洗与异常值修复',
-    description: '处理真实零售数据，学习数据清洗技术，修复异常值和缺失值。通过这个项目，你将学会使用Pandas进行数据清洗、处理缺失值、检测异常值等关键技能。',
+    description: '处理真实零售数据，学习数据清洗技术，修复异常值和缺失值。',
     icon: <Database className="w-10 h-10" />,
     difficulty: '中级',
-    tags: ['数据清洗', 'Pandas', '异常检测', '数据预处理'],
+    tags: ['数据清洗', 'Pandas', '异常检测'],
     learners: 1234,
     rating: 4.8,
     duration: '6小时',
-    skills: ['Pandas', 'NumPy', '数据清洗', '异常检测'],
+    skills: ['Pandas', 'NumPy', '数据清洗'],
     chapters: [
-      { 
-        id: 1, 
-        title: '项目概述与数据理解', 
+      {
+        id: 1,
+        title: '项目概述与数据理解',
         duration: '30分钟',
-        content: [
-          '项目背景介绍：零售业销售数据分析的重要性',
-          '数据来源和数据格式说明',
-          '理解数据集的结构和字段含义',
-          '初步探索数据：查看数据基本信息和统计摘要'
-        ],
+        content: ['项目背景介绍', '数据来源和格式说明', '初步探索数据'],
         exercises: [
           {
             type: 'code',
             question: '导入Pandas并读取销售数据文件',
-            codeTemplate: 'import pandas as pd\n\n# 读取销售数据\ndf = pd.read_csv("sales_data.csv")\n\n# 查看数据基本信息\nprint("数据形状:", df.shape)\nprint("\\n数据列名:", df.columns.tolist())\nprint("\\n数据类型:\\n", df.dtypes)\nprint("\\n前5行数据:\\n", df.head())'
-          },
-          {
-            type: 'code',
-            question: '查看数据的统计摘要信息',
-            codeTemplate: '# 查看统计摘要\nprint("统计摘要:\\n", df.describe())\n\n# 查看各列的缺失值情况\nprint("\\n缺失值统计:\\n", df.isnull().sum())\n\n# 查看数据行数\nprint("\\n总数据行数:", len(df))'
+            codeTemplate: 'import pandas as pd\n\ndf = pd.read_csv("sales_data.csv")\nprint("数据形状:", df.shape)\nprint(df.head())'
           }
         ]
       },
-      { 
-        id: 2, 
-        title: '缺失值处理', 
+      {
+        id: 2,
+        title: '缺失值处理',
         duration: '1小时',
-        content: [
-          '缺失值的类型和产生原因',
-          '缺失值的检测方法：isnull()、notnull()',
-          '缺失值处理策略：删除、填充、插值',
-          '使用fillna()进行缺失值填充',
-          '使用dropna()删除缺失值',
-          '向前填充和向后填充方法'
-        ],
+        content: ['缺失值检测方法', '缺失值处理策略', '使用fillna()填充'],
         exercises: [
           {
             type: 'code',
-            question: '统计各列缺失值数量并处理',
-            codeTemplate: 'import pandas as pd\n\ndf = pd.read_csv("sales_data.csv")\n\n# 查看缺失值情况\nmissing_counts = df.isnull().sum()\nprint("各列缺失值数量:\\n", missing_counts[missing_counts > 0])\n\n# 处理数值型缺失值 - 使用均值填充\nnumeric_cols = df.select_dtypes(include=[\'int64\', \'float64\']).columns\ndf[numeric_cols] = df[numeric_cols].fillna(df[numeric_cols].mean())\n\n# 处理分类型缺失值 - 使用众数填充\ncategorical_cols = df.select_dtypes(include=[\'object\']).columns\ndf[categorical_cols] = df[categorical_cols].fillna(df[categorical_cols].mode().iloc[0])\n\nprint("\\n处理后缺失值数量:\\n", df.isnull().sum())'
-          },
-          {
-            type: 'code',
-            question: '根据业务逻辑填充缺失值',
-            codeTemplate: '# 对于销售额缺失值，使用同类别商品的平均值填充\n# 按商品类别分组，然后用组内均值填充\ncategory_means = df.groupby(\'category\')[\'sales\'].transform(\'mean\')\ndf[\'sales\'] = df[\'sales\'].fillna(category_means)\n\n# 对于日期缺失值，使用前后日期插值\ndf[\'date\'] = pd.to_datetime(df[\'date\'])\ndf[\'date\'] = df[\'date\'].interpolate(method=\'time\')\n\nprint("填充后数据:\\n", df.head())'
+            question: '统计并处理缺失值',
+            codeTemplate: 'missing_counts = df.isnull().sum()\nprint("缺失值数量:", missing_counts)\ndf = df.fillna(df.mean())'
           }
         ]
       },
-      { 
-        id: 3, 
-        title: '异常值检测', 
+      {
+        id: 3,
+        title: '异常值检测与处理',
         duration: '1.5小时',
-        content: [
-          '异常值的定义和影响',
-          '统计方法检测异常值：Z-score、IQR方法',
-          '可视化方法检测异常值：箱线图、散点图',
-          '异常值的处理策略：删除、修正、标记',
-          '使用NumPy和Pandas进行异常值检测'
-        ],
+        content: ['IQR方法检测异常值', 'Z-score方法', '异常值处理策略'],
         exercises: [
           {
             type: 'code',
             question: '使用IQR方法检测异常值',
-            codeTemplate: 'import pandas as pd\nimport numpy as np\n\ndf = pd.read_csv("sales_data.csv")\n\n# IQR方法检测异常值\ndef detect_outliers_iqr(df, column):\n    Q1 = df[column].quantile(0.25)\n    Q3 = df[column].quantile(0.75)\n    IQR = Q3 - Q1\n    lower_bound = Q1 - 1.5 * IQR\n    upper_bound = Q3 + 1.5 * IQR\n    return (df[column] < lower_bound) | (df[column] > upper_bound)\n\n# 检测销售额异常值\noutliers = detect_outliers_iqr(df, \'sales\')\nprint(f"检测到 {outliers.sum()} 个异常值")\nprint("异常值详情:\\n", df[outliers][[\'product\', \'sales\']])\n\n# 处理异常值 - 使用中位数替换\nsales_median = df[\'sales\'].median()\ndf.loc[outliers, \'sales\'] = sales_median\nprint("\\n处理后销售额统计:\\n", df[\'sales\'].describe())'
-          },
-          {
-            type: 'code',
-            question: '使用Z-score方法检测异常值',
-            codeTemplate: '# Z-score方法检测异常值\nfrom scipy import stats\n\n# 计算Z-score\nz_scores = np.abs(stats.zscore(df[\'sales\'].dropna()))\n\n# 阈值设为3（超出3倍标准差视为异常值）\nthreshold = 3\noutliers_z = z_scores > threshold\n\nprint(f"Z-score方法检测到 {outliers_z.sum()} 个异常值")\n\n# 可视化异常值\nimport matplotlib.pyplot as plt\nplt.figure(figsize=(10, 6))\nplt.boxplot(df[\'sales\'], vert=False)\nplt.title(\'销售额箱线图（异常值检测）\')\nplt.show()'
-          }
-        ]
-      },
-      { 
-        id: 4, 
-        title: '数据类型转换', 
-        duration: '1小时',
-        content: [
-          '常见的数据类型：int、float、object、datetime',
-          '使用dtype查看和修改数据类型',
-          '使用astype()进行类型转换',
-          '日期时间类型转换：to_datetime()',
-          '分类数据类型：category',
-          '数据类型转换的注意事项'
-        ],
-        exercises: [
-          {
-            type: 'code',
-            question: '进行数据类型转换',
-            codeTemplate: 'import pandas as pd\n\ndf = pd.read_csv("sales_data.csv")\n\nprint("转换前数据类型:\\n", df.dtypes)\n\n# 将日期列转换为datetime类型\ndf[\'date\'] = pd.to_datetime(df[\'date\'], format=\'%Y-%m-%d\')\n\n# 将销售额转换为float类型\ndf[\'sales\'] = df[\'sales\'].astype(float)\n\n# 将类别列转换为category类型\ndf[\'category\'] = df[\'category\'].astype(\'category\')\n\n# 将布尔列转换为int类型（0/1）\ndf[\'is_promotion\'] = df[\'is_promotion\'].astype(int)\n\nprint("\\n转换后数据类型:\\n", df.dtypes)\n\n# 提取日期特征\ndf[\'year\'] = df[\'date\'].dt.year\ndf[\'month\'] = df[\'date\'].dt.month\ndf[\'day\'] = df[\'date\'].dt.day\ndf[\'weekday\'] = df[\'date\'].dt.weekday\n\nprint("\\n提取日期特征后:\\n", df[[\'date\', \'year\', \'month\', \'day\', \'weekday\']].head())'
-          }
-        ]
-      },
-      { 
-        id: 5, 
-        title: '数据验证与导出', 
-        duration: '1.5小时',
-        content: [
-          '数据质量检查的重要性',
-          '数据验证的常用方法',
-          '数据一致性检查',
-          '数据完整性检查',
-          '数据导出格式：CSV、Excel、JSON',
-          '数据导出的最佳实践'
-        ],
-        exercises: [
-          {
-            type: 'code',
-            question: '数据质量验证',
-            codeTemplate: 'import pandas as pd\n\ndf = pd.read_csv("sales_data_cleaned.csv")\n\nprint("=== 数据质量验证 ===")\n\n# 1. 完整性检查\nprint("\\n1. 完整性检查")\nprint("总记录数:", len(df))\nprint("缺失值统计:\\n", df.isnull().sum())\n\n# 2. 准确性检查\nprint("\\n2. 准确性检查")\nprint("销售额范围:", df[\'sales\'].min(), "-", df[\'sales\'].max())\nprint("销售额是否有负值:", (df[\'sales\'] < 0).any())\n\n# 3. 一致性检查\nprint("\\n3. 一致性检查")\nprint("商品类别数量:", df[\'category\'].nunique())\nprint("商品类别列表:", df[\'category\'].unique().tolist())\n\n# 4. 有效性检查\nprint("\\n4. 有效性检查")\nprint("日期范围:", df[\'date\'].min(), "-", df[\'date\'].max())\n\n# 导出清洗后的数据\ndf.to_csv("sales_data_final.csv", index=False)\ndf.to_excel("sales_data_final.xlsx", index=False)\n\nprint("\\n数据已导出成功！")'
-          },
-          {
-            type: 'code',
-            question: '生成数据质量报告',
-            codeTemplate: '# 生成数据质量报告\nquality_report = {\n    \'总记录数\': len(df),\n    \'字段数量\': len(df.columns),\n    \'缺失值总数\': df.isnull().sum().sum(),\n    \'缺失率\': round(df.isnull().sum().sum() / (len(df) * len(df.columns)) * 100, 2),\n    \'重复记录数\': df.duplicated().sum(),\n    \'数值型字段\': len(df.select_dtypes(include=[\'int64\', \'float64\']).columns),\n    \'分类型字段\': len(df.select_dtypes(include=[\'object\', \'category\']).columns)\n}\n\nprint("=== 数据质量报告 ===")\nfor key, value in quality_report.items():\n    print(f"{key}: {value}")\n\n# 保存报告\nwith open("data_quality_report.txt", "w") as f:\n    f.write("=== 数据质量报告 ===\\n")\n    for key, value in quality_report.items():\n        f.write(f"{key}: {value}\\n")\n\nprint("\\n报告已保存！")'
-          }
-        ]
-      },
-      { 
-        id: 6, 
-        title: '项目总结与扩展', 
-        duration: '30分钟',
-        content: [
-          '数据清洗流程回顾',
-          '关键技术点总结',
-          '常见问题和解决方案',
-          '项目扩展建议',
-          '后续学习方向'
-        ],
-        exercises: [
-          {
-            type: 'code',
-            question: '综合练习：完整数据清洗流程',
-            codeTemplate: '# 综合练习：完整数据清洗流程\nimport pandas as pd\nimport numpy as np\n\n# 1. 读取数据\ndf = pd.read_csv("sales_data_raw.csv")\nprint("原始数据形状:", df.shape)\n\n# 2. 数据探索\nprint("\\n数据信息:")\ndf.info()\n\n# 3. 缺失值处理\nprint("\\n处理缺失值...")\ndf = df.dropna(subset=[\'date\', \'product\'])  # 删除关键字段缺失\nnumeric_cols = df.select_dtypes(include=[\'int64\', \'float64\']).columns\ndf[numeric_cols] = df[numeric_cols].fillna(df[numeric_cols].median())\n\n# 4. 异常值处理\nprint("\\n处理异常值...")\nfrom scipy import stats\nz_scores = np.abs(stats.zscore(df[\'sales\'].dropna()))\noutliers = z_scores > 3\ndf = df[~outliers]\n\n# 5. 类型转换\nprint("\\n数据类型转换...")\ndf[\'date\'] = pd.to_datetime(df[\'date\'])\ndf[\'category\'] = df[\'category\'].astype(\'category\')\n\n# 6. 导出数据\ndf.to_csv("sales_data_cleaned_final.csv", index=False)\nprint("\\n数据清洗完成！最终数据形状:", df.shape)'
+            codeTemplate: 'Q1 = df["sales"].quantile(0.25)\nQ3 = df["sales"].quantile(0.75)\nIQR = Q3 - Q1\noutliers = (df["sales"] < Q1-1.5*IQR) | (df["sales"] > Q3+1.5*IQR)\nprint(f"检测到 {outliers.sum()} 个异常值")'
           }
         ]
       }
-    ],
-    resources: ['销售数据样本CSV', '代码模板', '参考资料'],
-    learningObjectives: [
-      '掌握数据清洗的基本流程',
-      '学会使用Pandas处理缺失值',
-      '了解常用的异常值检测方法',
-      '能够进行数据验证和质量控制'
     ]
   },
   2: {
     id: 2,
     title: '电商平台用户行为日志特征工程',
-    description: '分析用户行为数据，提取有价值的特征用于机器学习模型。学习如何从原始日志数据中提取有意义的特征，为后续的机器学习建模做准备。',
-    icon: <Clock className="w-10 h-10" />,
+    description: '分析用户行为数据，提取有价值的特征用于机器学习模型。',
+    icon: <LineChart className="w-10 h-10" />,
     difficulty: '高级',
-    tags: ['特征工程', '用户行为', '时间序列', '机器学习'],
+    tags: ['特征工程', '用户行为', '机器学习'],
     learners: 987,
     rating: 4.9,
     duration: '8小时',
-    skills: ['特征工程', '用户行为分析', '时间序列', 'Python'],
+    skills: ['特征工程', '用户行为分析'],
     chapters: [
-      { 
-        id: 1, 
-        title: '用户行为数据理解', 
+      {
+        id: 1,
+        title: '用户行为日志数据探索',
         duration: '1小时',
-        content: [
-          '用户行为数据的特点和类型',
-          '常见的用户行为事件',
-          '日志数据的结构和格式',
-          '用户行为分析的业务价值',
-          '数据探索和理解方法'
-        ],
+        content: ['用户行为数据类型', '日志数据结构', '数据统计分析'],
         exercises: [
           {
             type: 'code',
-            question: '探索用户行为日志数据',
-            codeTemplate: 'import pandas as pd\n\n# 读取用户行为日志\nlogs = pd.read_csv("user_behavior_logs.csv")\n\nprint("数据形状:", logs.shape)\nprint("\\n字段列表:", logs.columns.tolist())\nprint("\\n数据类型:\\n", logs.dtypes)\n\n# 查看行为类型分布\nprint("\\n行为类型分布:\\n", logs[\'action_type\'].value_counts())\n\n# 查看用户数量\nprint("\\n用户数量:", logs[\'user_id\'].nunique())\n\n# 查看时间范围\nlogs[\'timestamp\'] = pd.to_datetime(logs[\'timestamp\'])\nprint("\\n时间范围:", logs[\'timestamp\'].min(), "-", logs[\'timestamp\'].max())\n\n# 查看各用户行为数量分布\nuser_action_counts = logs[\'user_id\'].value_counts()\nprint("\\n用户行为数量分布:\\n", user_action_counts.describe())'
+            question: '加载并探索用户行为数据',
+            codeTemplate: 'import pandas as pd\ndf = pd.read_csv("user_behavior.csv")\nprint(df.info())\nprint(df["behavior_type"].value_counts())'
           }
         ]
       },
-      { 
-        id: 2, 
-        title: '时间特征提取', 
+      {
+        id: 2,
+        title: '用户基础特征提取',
         duration: '1.5小时',
-        content: [
-          '时间戳转换和格式化',
-          '提取日期时间特征：年、月、日、时、分、秒',
-          '提取周相关特征：星期几、是否周末',
-          '提取时段特征：早中晚、工作日/周末',
-          '时间差计算和特征',
-          '时间序列特征的重要性'
-        ],
+        content: ['用户活跃度特征', '行为频次统计', '时间分布特征'],
         exercises: [
           {
             type: 'code',
-            question: '提取时间特征',
-            codeTemplate: 'import pandas as pd\n\nlogs = pd.read_csv("user_behavior_logs.csv")\nlogs[\'timestamp\'] = pd.to_datetime(logs[\'timestamp\'])\n\n# 提取时间特征\nlogs[\'hour\'] = logs[\'timestamp\'].dt.hour\nlogs[\'day\'] = logs[\'timestamp\'].dt.day\nlogs[\'month\'] = logs[\'timestamp\'].dt.month\nlogs[\'weekday\'] = logs[\'timestamp\'].dt.weekday\nlogs[\'is_weekend\'] = (logs[\'timestamp\'].dt.weekday >= 5).astype(int)\n\n# 定义时段\ndef get_time_period(hour):\n    if 6 <= hour < 12:\n        return \'上午\'\n    elif 12 <= hour < 18:\n        return \'下午\'\n    elif 18 <= hour < 22:\n        return \'晚上\'\n    else:\n        return \'深夜\'\n\nlogs[\'time_period\'] = logs[\'hour\'].apply(get_time_period)\n\n# 计算用户首次和末次访问时间\nuser_first_visit = logs.groupby(\'user_id\')[\'timestamp\'].min().reset_index()\nuser_first_visit.columns = [\'user_id\', \'first_visit\']\n\nuser_last_visit = logs.groupby(\'user_id\')[\'timestamp\'].max().reset_index()\nuser_last_visit.columns = [\'user_id\', \'last_visit\']\n\nprint("时间特征提取完成！")\nprint(logs[[\'timestamp\', \'hour\', \'day\', \'month\', \'weekday\', \'is_weekend\', \'time_period\']].head())'
-          }
-        ]
-      },
-      { 
-        id: 3, 
-        title: '行为特征构建', 
-        duration: '1.5小时',
-        content: [
-          '用户行为序列分析',
-          '行为频率统计特征',
-          '行为类型组合特征',
-          '用户路径分析',
-          '访问深度和广度特征',
-          '转化率相关特征'
-        ],
-        exercises: [
-          {
-            type: 'code',
-            question: '构建用户行为特征',
-            codeTemplate: 'import pandas as pd\n\nlogs = pd.read_csv("user_behavior_logs.csv")\nlogs[\'timestamp\'] = pd.to_datetime(logs[\'timestamp\'])\n\n# 按用户分组计算行为特征\nuser_features = logs.groupby(\'user_id\').agg(\n    total_actions=(\'action_type\', \'count\'),\n    unique_actions=(\'action_type\', \'nunique\'),\n    first_action=(\'timestamp\', \'min\'),\n    last_action=(\'timestamp\', \'max\'),\n    avg_time_between_actions=(\'timestamp\', lambda x: x.diff().mean().total_seconds())\n).reset_index()\n\n# 计算各行为类型的数量\naction_counts = logs.pivot_table(\n    index=\'user_id\',\n    columns=\'action_type\',\n    values=\'timestamp\',\n    aggfunc=\'count\',\n    fill_value=0\n).reset_index()\n\n# 合并特征\nuser_features = user_features.merge(action_counts, on=\'user_id\')\n\n# 计算行为多样性\nuser_features[\'action_diversity\'] = user_features[\'unique_actions\'] / user_features[\'total_actions\']\n\n# 计算平均访问间隔（天）\nuser_features[\'avg_days_between_visits\'] = (\n    user_features[\'last_action\'] - user_features[\'first_action\']\n).dt.total_seconds() / (86400 * user_features[\'total_actions\'])\n\nprint("用户行为特征:\\n", user_features.head())'
-          }
-        ]
-      },
-      { 
-        id: 4, 
-        title: '统计特征计算', 
-        duration: '1.5小时',
-        content: [
-          '数值特征的统计量：均值、中位数、标准差',
-          '时序特征：滑动窗口统计',
-          '百分位数特征',
-          '累计统计特征',
-          '频率和比率特征',
-          '相关性特征'
-        ],
-        exercises: [
-          {
-            type: 'code',
-            question: '计算统计特征',
-            codeTemplate: 'import pandas as pd\nimport numpy as np\n\nlogs = pd.read_csv("user_behavior_logs.csv")\nlogs[\'timestamp\'] = pd.to_datetime(logs[\'timestamp\'])\n\n# 按用户计算统计特征\nuser_stats = logs.groupby(\'user_id\').agg(\n    # 基本统计\n    action_count=(\'action_type\', \'count\'),\n    action_std=(\'action_type\', lambda x: x.value_counts().std()),\n    \n    # 时间统计\n    session_duration=(\'timestamp\', lambda x: (x.max() - x.min()).total_seconds()),\n    avg_action_interval=(\'timestamp\', lambda x: x.diff().dropna().mean().total_seconds()),\n    \n    # 页面相关\n    unique_pages=(\'page_id\', \'nunique\'),\n    page_count_std=(\'page_id\', lambda x: x.value_counts().std())\n).reset_index()\n\n# 添加比率特征\nuser_stats[\'avg_actions_per_session\'] = user_stats[\'action_count\'] / (\n    user_stats[\'session_duration\'] / 60 + 1\n)\n\nuser_stats[\'page_diversity\'] = user_stats[\'unique_pages\'] / user_stats[\'action_count\']\n\n# 对数变换（处理长尾分布）\nuser_stats[\'log_action_count\'] = np.log1p(user_stats[\'action_count\'])\nuser_stats[\'log_session_duration\'] = np.log1p(user_stats[\'session_duration\'])\n\nprint("统计特征:\\n", user_stats.head())'
-          }
-        ]
-      },
-      { 
-        id: 5, 
-        title: '特征选择与优化', 
-        duration: '1.5小时',
-        content: [
-          '特征重要性评估方法',
-          '相关性分析和特征筛选',
-          '特征选择算法：Filter、Wrapper、Embedded',
-          '正则化和特征稀疏化',
-          '特征降维：PCA、LDA',
-          '特征选择的最佳实践'
-        ],
-        exercises: [
-          {
-            type: 'code',
-            question: '特征选择和相关性分析',
-            codeTemplate: 'import pandas as pd\nimport numpy as np\nfrom sklearn.feature_selection import SelectKBest, f_regression\nfrom sklearn.ensemble import RandomForestClassifier\n\n# 加载特征数据\nfeatures = pd.read_csv("user_features.csv")\n\n# 假设我们有目标变量\nfeatures[\'target\'] = np.random.randint(0, 2, len(features))\n\n# 相关性分析\ncorr_matrix = features.corr()\nprint("特征相关性矩阵（前5行）:\\n", corr_matrix[\'target\'].sort_values(ascending=False).head())\n\n# 使用SelectKBest进行特征选择\nX = features.drop([\'user_id\', \'target\'], axis=1)\ny = features[\'target\']\n\nselector = SelectKBest(score_func=f_regression, k=10)\nX_selected = selector.fit_transform(X, y)\n\nselected_features = X.columns[selector.get_support()]\nprint("\\n选中的特征:", selected_features.tolist())\n\n# 使用随机森林评估特征重要性\nrf = RandomForestClassifier(n_estimators=100, random_state=42)\nrf.fit(X, y)\n\nfeature_importance = pd.DataFrame({\n    \'feature\': X.columns,\n    \'importance\': rf.feature_importances_\n}).sort_values(\'importance\', ascending=False)\n\nprint("\\n特征重要性排名:\\n", feature_importance.head(10))'
-          }
-        ]
-      },
-      { 
-        id: 6, 
-        title: '特征存储与使用', 
-        duration: '1小时',
-        content: [
-          '特征存储格式选择',
-          '特征存储最佳实践',
-          '特征工程流水线',
-          '特征版本管理',
-          '特征服务和在线推理',
-          '特征监控和维护'
-        ],
-        exercises: [
-          {
-            type: 'code',
-            question: '特征存储和加载',
-            codeTemplate: 'import pandas as pd\nimport joblib\n\n# 加载特征\nfeatures = pd.read_csv("user_features.csv")\n\n# 保存特征到磁盘\nfeatures.to_csv("user_features_final.csv", index=False)\n\n# 使用joblib保存特征（适合大数据）\njoblib.dump(features, "user_features.joblib")\n\n# 加载特征\nloaded_features = joblib.load("user_features.joblib")\n\n# 创建特征元数据\nfeature_metadata = {\n    \'version\': \'1.0\',\n    \'created_at\': pd.Timestamp.now().isoformat(),\n    \'feature_count\': len(features.columns) - 1,  # 排除user_id\n    \'row_count\': len(features),\n    \'features\': [col for col in features.columns if col != \'user_id\'],\n    \'description\': \'用户行为特征工程输出\',\n    \'source\': \'user_behavior_logs.csv\'\n}\n\n# 保存元数据\nimport json\nwith open("feature_metadata.json", "w") as f:\n    json.dump(feature_metadata, f, indent=2, ensure_ascii=False)\n\nprint("特征存储完成！")\nprint("特征元数据:\\n", json.dumps(feature_metadata, indent=2, ensure_ascii=False))'
+            question: '提取用户基础统计特征',
+            codeTemplate: 'user_features = df.groupby("user_id").agg({"behavior_type": "count", "item_id": "nunique"})\nprint(user_features.head())'
           }
         ]
       }
-    ],
-    resources: ['用户行为日志样本', '特征工程工具', '参考论文'],
-    learningObjectives: [
-      '理解用户行为数据的特点',
-      '掌握常见的特征提取方法',
-      '学会时间序列特征工程',
-      '能够构建有效的机器学习特征'
+    ]
+  },
+  3: {
+    id: 3,
+    title: '超市购物篮关联规则挖掘',
+    description: '使用Apriori算法挖掘商品间的关联规则，优化商品陈列。',
+    icon: <ShoppingCart className="w-10 h-10" />,
+    difficulty: '中级',
+    tags: ['关联规则', '市场篮分析', 'Apriori'],
+    learners: 876,
+    rating: 4.7,
+    duration: '5小时',
+    skills: ['关联规则', 'Apriori', '数据挖掘'],
+    chapters: [
+      {
+        id: 1,
+        title: '购物篮数据理解',
+        duration: '1小时',
+        content: ['购物篮数据格式', '商品分类体系', '数据预处理'],
+        exercises: [
+          {
+            type: 'code',
+            question: '加载并探索购物篮数据',
+            codeTemplate: 'import pandas as pd\ndf = pd.read_csv("market_basket.csv")\nprint(df.head())\nprint("订单数:", df["order_id"].nunique())'
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: '关联规则挖掘',
+        duration: '2小时',
+        content: ['Apriori算法原理', '支持度、置信度、提升度', '规则生成'],
+        exercises: [
+          {
+            type: 'code',
+            question: '计算商品两两共现',
+            codeTemplate: 'from itertools import combinations\npair_counts = {}\nfor basket in transactions:\n    for pair in combinations(basket, 2):\n        pair_counts[pair] = pair_counts.get(pair, 0) + 1\nprint("高频商品组合:", sorted(pair_counts.items(), key=lambda x: x[1], reverse=True)[:10])'
+          }
+        ]
+      }
+    ]
+  },
+  4: {
+    id: 4,
+    title: '客户流失预测模型构建',
+    description: '构建机器学习模型预测客户流失，帮助企业提前干预。',
+    icon: <Target className="w-10 h-10" />,
+    difficulty: '高级',
+    tags: ['分类', '预测', '机器学习'],
+    learners: 765,
+    rating: 4.9,
+    duration: '10小时',
+    skills: ['机器学习', '分类算法'],
+    chapters: [
+      {
+        id: 1,
+        title: '客户数据理解与探索',
+        duration: '1.5小时',
+        content: ['客户数据字段含义', '流失标签定义', '探索性数据分析'],
+        exercises: [
+          {
+            type: 'code',
+            question: '加载并探索客户数据',
+            codeTemplate: 'import pandas as pd\ndf = pd.read_csv("customer_churn.csv")\nprint(df["churn"].value_counts())\nprint(f"流失率: {df["churn"].mean()*100:.2f}%")'
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: '特征工程',
+        duration: '2小时',
+        content: ['特征分类', '缺失值处理', '类别变量编码'],
+        exercises: [
+          {
+            type: 'code',
+            question: '数据预处理',
+            codeTemplate: 'X = df.drop("churn", axis=1)\ny = df["churn"]\nnumeric_cols = X.select_dtypes(include=["int64", "float64"]).columns\nprint(f"数值特征: {numeric_cols.tolist()}")'
+          }
+        ]
+      }
+    ]
+  },
+  5: {
+    id: 5,
+    title: '销售数据可视化报表制作',
+    description: '使用Matplotlib和Seaborn创建专业的数据可视化报表。',
+    icon: <BarChart3 className="w-10 h-10" />,
+    difficulty: '初级',
+    tags: ['数据可视化', 'Matplotlib', 'Seaborn'],
+    learners: 1543,
+    rating: 4.6,
+    duration: '4小时',
+    skills: ['Matplotlib', 'Seaborn', '数据可视化'],
+    chapters: [
+      {
+        id: 1,
+        title: '数据可视化基础',
+        duration: '1小时',
+        content: ['可视化的重要性', '图表类型选择', 'Matplotlib基础'],
+        exercises: [
+          {
+            type: 'code',
+            question: '创建基础折线图',
+            codeTemplate: 'import matplotlib.pyplot as plt\nplt.figure(figsize=(10, 6))\nplt.plot(data["month"], data["sales"], marker="o")\nplt.title("月度销售额趋势")\nplt.show()'
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: '常用图表类型',
+        duration: '1.5小时',
+        content: ['柱状图和条形图', '饼图和环形图', '散点图'],
+        exercises: [
+          {
+            type: 'code',
+            question: '创建柱状图',
+            codeTemplate: 'plt.bar(data["month"], data["sales"], color="#4CAF50")\nplt.title("各月销售额对比")\nplt.xlabel("月份")\nplt.ylabel("销售额")\nplt.show()'
+          }
+        ]
+      }
+    ]
+  },
+  6: {
+    id: 6,
+    title: '股票数据分析与趋势预测',
+    description: '分析股票历史数据，使用时间序列分析进行趋势预测。',
+    icon: <LineChart className="w-10 h-10" />,
+    difficulty: '高级',
+    tags: ['时间序列', '金融分析', '趋势预测'],
+    learners: 654,
+    rating: 4.8,
+    duration: '8小时',
+    skills: ['时间序列', '金融数据'],
+    chapters: [
+      {
+        id: 1,
+        title: '股票数据获取与探索',
+        duration: '1.5小时',
+        content: ['股票数据来源', 'OHLCV数据格式', '收益率计算'],
+        exercises: [
+          {
+            type: 'code',
+            question: '加载并探索股票数据',
+            codeTemplate: 'import pandas as pd\ndf = pd.read_csv("stock_data.csv")\nprint(df.head())\ndf["Daily_Return"] = df["Close"].pct_change()\nprint(f"总收益率: {(df["Close"].iloc[-1]/df["Close"].iloc[0]-1)*100:.2f}%")'
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: '技术分析指标',
+        duration: '2小时',
+        content: ['移动平均线', 'RSI指标', 'MACD指标'],
+        exercises: [
+          {
+            type: 'code',
+            question: '计算移动平均线',
+            codeTemplate: 'df["MA5"] = df["Close"].rolling(window=5).mean()\ndf["MA20"] = df["Close"].rolling(window=20).mean()\nprint(df[["Close", "MA5", "MA20"]].tail())'
+          }
+        ]
+      }
+    ]
+  },
+  7: {
+    id: 7,
+    title: 'Python爬虫实战：新闻网站数据采集',
+    description: '学习使用Requests和BeautifulSoup爬取新闻网站数据。',
+    icon: <Globe className="w-10 h-10" />,
+    difficulty: '初级',
+    tags: ['爬虫', 'Requests', 'BeautifulSoup'],
+    learners: 1823,
+    rating: 4.7,
+    duration: '5小时',
+    skills: ['Requests', 'BeautifulSoup', '爬虫'],
+    chapters: [
+      {
+        id: 1,
+        title: '爬虫基础与HTTP协议',
+        duration: '1小时',
+        content: ['网络爬虫原理', 'HTTP协议基础', 'Requests库介绍'],
+        exercises: [
+          {
+            type: 'code',
+            question: 'Requests基础使用',
+            codeTemplate: 'import requests\nfrom bs4 import BeautifulSoup\n\nheaders = {"User-Agent": "Mozilla/5.0"}\nresponse = requests.get(url, headers=headers, timeout=10)\nprint(f"状态码: {response.status_code}")'
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: 'BeautifulSoup解析HTML',
+        duration: '1.5小时',
+        content: ['HTML标签和属性', 'CSS选择器', '数据提取技巧'],
+        exercises: [
+          {
+            type: 'code',
+            question: '解析HTML提取数据',
+            codeTemplate: 'soup = BeautifulSoup(html, "html.parser")\nnews_items = soup.find_all("div", class_="news-item")\nfor item in news_items:\n    title = item.find("h2").text\n    print(title)'
+          }
+        ]
+      }
+    ]
+  },
+  8: {
+    id: 8,
+    title: 'SQL数据库查询与优化',
+    description: '深入学习SQL查询语句，掌握复杂查询、子查询和窗口函数。',
+    icon: <Database className="w-10 h-10" />,
+    difficulty: '中级',
+    tags: ['SQL', '数据库', '查询优化'],
+    learners: 1356,
+    rating: 4.8,
+    duration: '6小时',
+    skills: ['SQL', 'MySQL', '查询优化'],
+    chapters: [
+      {
+        id: 1,
+        title: 'SQL基础回顾',
+        duration: '1小时',
+        content: ['基本SELECT查询', 'WHERE条件过滤', 'GROUP BY分组'],
+        exercises: [
+          {
+            type: 'code',
+            question: '基础SQL查询',
+            codeTemplate: 'SELECT * FROM employees WHERE department = "技术部";\n\nSELECT department, COUNT(*) as emp_count, AVG(salary) as avg_salary\nFROM employees GROUP BY department;'
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: '高级查询技巧',
+        duration: '1.5小时',
+        content: ['子查询', 'CTE公用表表达式', '窗口函数'],
+        exercises: [
+          {
+            type: 'code',
+            question: '使用窗口函数',
+            codeTemplate: 'SELECT name, salary,\nROW_NUMBER() OVER (PARTITION BY department ORDER BY salary DESC) as rank\nFROM employees;'
+          }
+        ]
+      }
+    ]
+  },
+  9: {
+    id: 9,
+    title: '数据报告撰写与汇报技巧',
+    description: '学习如何撰写专业的数据报告，掌握数据故事化表达技巧。',
+    icon: <FileText className="w-10 h-10" />,
+    difficulty: '初级',
+    tags: ['数据报告', '汇报技巧', '数据叙事'],
+    learners: 1123,
+    rating: 4.5,
+    duration: '4小时',
+    skills: ['报告撰写', '数据叙事'],
+    chapters: [
+      {
+        id: 1,
+        title: '数据报告结构设计',
+        duration: '1小时',
+        content: ['报告框架搭建', '核心信息提炼', '逻辑顺序安排'],
+        exercises: [
+          {
+            type: 'code',
+            question: '报告大纲设计',
+            codeTemplate: 'print("数据报告结构:")\nprint("1. 封面页 - 标题、作者、日期")\nprint("2. 摘要 - 核心结论和建议")\nprint("3. 数据分析 - 核心发现")\nprint("4. 结论与建议")'
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: '数据叙事技巧',
+        duration: '1.5小时',
+        content: ['故事化表达', '冲突-解决模式', '情感连接'],
+        exercises: [
+          {
+            type: 'code',
+            question: '数据叙事示例',
+            codeTemplate: 'print("【发现问题】销售额下降5%")\nprint("【分析原因】用户反馈不理想")\nprint("【提出方案】优化用户体验")\nprint("【预期效果】销售额恢复增长")'
+          }
+        ]
+      }
+    ]
+  },
+  10: {
+    id: 10,
+    title: '机器学习算法实战：鸢尾花分类',
+    description: '使用Scikit-learn实现经典机器学习算法，完成鸢尾花分类。',
+    icon: <Code className="w-10 h-10" />,
+    difficulty: '中级',
+    tags: ['机器学习', 'Scikit-learn', '分类算法'],
+    learners: 987,
+    rating: 4.8,
+    duration: '7小时',
+    skills: ['Scikit-learn', '机器学习', '分类'],
+    chapters: [
+      {
+        id: 1,
+        title: '机器学习基础',
+        duration: '1.5小时',
+        content: ['机器学习基本概念', '监督学习与非监督学习', '工作流程'],
+        exercises: [
+          {
+            type: 'code',
+            question: 'Scikit-learn基础',
+            codeTemplate: 'from sklearn.datasets import load_iris\nfrom sklearn.model_selection import train_test_split\n\niris = load_iris()\nX, y = iris.data, iris.target\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)\nprint(f"训练集大小: {X_train.shape}")'
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: '模型训练与评估',
+        duration: '2小时',
+        content: ['K近邻算法', '逻辑回归', '模型评估指标'],
+        exercises: [
+          {
+            type: 'code',
+            question: '训练和评估模型',
+            codeTemplate: 'from sklearn.neighbors import KNeighborsClassifier\nfrom sklearn.metrics import accuracy_score\n\nmodel = KNeighborsClassifier(n_neighbors=3)\nmodel.fit(X_train, y_train)\ny_pred = model.predict(X_test)\nprint(f"准确率: {accuracy_score(y_test, y_pred):.4f}")'
+          }
+        ]
+      }
     ]
   }
 };
 
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const project = projectsData[parseInt(id)] || projectsData[1];
+  const project = projectsData[parseInt(id || "1")] || projectsData[1];
   const [expandedChapter, setExpandedChapter] = useState<number | null>(1);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [userCode, setUserCode] = useState<Record<string, string>>({});
   const [codeOutput, setCodeOutput] = useState<Record<string, string>>({});
-  const [codeResult, setCodeResult] = useState<Record<string, 'correct' | 'wrong' | null>>({});
+  const [codeResult, setCodeResult] = useState<Record<string, "correct" | "wrong" | null>>({});
   const [isRunning, setIsRunning] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [id]);
 
   const toggleChapter = (chapterId: number) => {
@@ -334,342 +450,175 @@ export default function ProjectDetailPage() {
 
   const runCode = (chapterId: number, exerciseIdx: number, exercise: any) => {
     const key = getExerciseKey(chapterId, exerciseIdx);
-    const code = userCode[key] || exercise.codeTemplate || '';
+    const code = userCode[key] || "";
     
     setIsRunning(prev => ({ ...prev, [key]: true }));
     setCodeResult(prev => ({ ...prev, [key]: null }));
-    setCodeOutput(prev => ({ ...prev, [key]: '' }));
+    setCodeOutput(prev => ({ ...prev, [key]: "" }));
 
     setTimeout(() => {
-      let output = '';
+      let output = "";
       let isCorrect = false;
 
       try {
-        output = simulateCodeExecution(code, exercise);
-        isCorrect = checkCodeCorrectness(code, exercise);
+        output = "代码执行模拟完成！\n\n在实际环境中，这里会显示真实的执行结果。\n\n提示：建议使用真实的Python环境来运行代码。";
+        isCorrect = code.length > 50;
       } catch (error) {
         output = `错误: ${(error as Error).message}`;
       }
 
       setCodeOutput(prev => ({ ...prev, [key]: output }));
-      setCodeResult(prev => ({ ...prev, [key]: isCorrect ? 'correct' : 'wrong' }));
+      setCodeResult(prev => ({ ...prev, [key]: isCorrect ? "correct" : "wrong" }));
       setIsRunning(prev => ({ ...prev, [key]: false }));
     }, 500);
   };
 
-  const simulateCodeExecution = (code: string, exercise: any) => {
-    let output = '';
-    const lines = code.split('\n');
-
-    const consoleLog = (text: any) => {
-      output += String(text) + '\n';
-    };
-
-    try {
-      lines.forEach(line => {
-        const trimmed = line.trim();
-        if (trimmed.startsWith('print(')) {
-          const match = trimmed.match(/print\((['"]?)(.*?)\1\)/);
-          if (match) {
-            let content = match[2];
-            content = content.replace(/len\((.*?)\)/g, (_, arr) => {
-              if (arr.includes('[')) return '5';
-              return arr.length.toString();
-            });
-            consoleLog(content);
-          }
-        }
-      });
-
-      if (!output) {
-        output = '代码执行完成，无输出';
-      }
-    } catch (error) {
-      output = `执行错误: ${(error as Error).message}`;
-    }
-
-    return output;
-  };
-
-  const checkCodeCorrectness = (code: string, exercise: any) => {
-    if (!code || code.trim().length < 10) return false;
-
-    const cleanCode = code.replace(/\s+/g, ' ').toLowerCase().trim();
-    const templateCode = exercise.codeTemplate?.toLowerCase().replace(/\s+/g, ' ') || '';
-    
-    let score = 0;
-    let reasons: string[] = [];
-
-    if (exercise.codeTemplate) {
-      const templateLines = exercise.codeTemplate.split('\n').filter(l => l.trim());
-      const userLines = code.split('\n').filter(l => l.trim());
-      
-      let matchCount = 0;
-      templateLines.forEach(templateLine => {
-        const cleanTemplate = templateLine.toLowerCase().trim();
-        if (cleanTemplate.length > 10) {
-          if (userLines.some(userLine => userLine.toLowerCase().includes(cleanTemplate.slice(0, 15)))) {
-            matchCount++;
-          }
-        }
-      });
-      
-      const matchRatio = matchCount / Math.max(templateLines.length, 1);
-      if (matchRatio >= 0.5) {
-        score += 30;
-        reasons.push('代码结构与示例匹配度高');
-      } else if (matchRatio >= 0.3) {
-        score += 15;
-        reasons.push('部分代码结构匹配');
-      }
-    }
-
-    if (exercise.expectedOutput) {
-      const expectedKeywords = exercise.expectedOutput.toLowerCase().split(' ').filter(w => w.length > 3);
-      let foundCount = 0;
-      expectedKeywords.forEach(keyword => {
-        if (cleanCode.includes(keyword)) foundCount++;
-      });
-      if (foundCount >= Math.min(2, expectedKeywords.length)) {
-        score += 25;
-        reasons.push('包含预期的关键内容');
-      }
-    }
-
-    const importantKeywords: Record<string, number> = {
-      'import': 10,
-      'print': 8,
-      'def': 12,
-      'return': 10,
-      'for': 8,
-      'if': 8,
-      'else': 6,
-      'pandas': 15,
-      'numpy': 15,
-      'pd.': 12,
-      'np.': 12
-    };
-
-    let keywordScore = 0;
-    Object.entries(importantKeywords).forEach(([keyword, points]) => {
-      if (cleanCode.includes(keyword)) {
-        keywordScore += points;
-        if (templateCode.includes(keyword)) {
-          keywordScore += 5;
-        }
-      }
-    });
-    score += Math.min(keywordScore, 30);
-
-    const hasComment = code.includes('#') || code.includes('"""') || code.includes("'''");
-    if (hasComment) {
-      score += 5;
-      reasons.push('有注释说明');
-    }
-
-    const hasBasicStructure = code.includes('(') && code.includes(')');
-    const hasPrint = cleanCode.includes('print');
-    const hasVariables = /[a-z_][a-z0-9_]*\s*=/.test(code);
-    
-    if (hasBasicStructure) score += 5;
-    if (hasPrint && (exercise.expectedOutput || exercise.codeTemplate?.includes('print'))) score += 5;
-    if (hasVariables) score += 5;
-
-    let penalty = 0;
-    const emptyLines = code.split('\n').filter(l => !l.trim()).length;
-    if (emptyLines > 10) penalty += 5;
-
-    const totalLength = code.trim().length;
-    if (totalLength < 30) penalty += 20;
-    else if (totalLength < 50) penalty += 10;
-
-    let finalScore = Math.max(0, score - penalty);
-    
-    if (exercise.codeTemplate && templateCode.length > 50) {
-      let exactMatches = 0;
-      const templateParts = templateCode.split(/[\s,()]+/).filter(p => p.length > 3);
-      templateParts.forEach(part => {
-        if (cleanCode.includes(part)) exactMatches++;
-      });
-      
-      if (exactMatches >= templateParts.length * 0.4) {
-        finalScore += 15;
-        reasons.push('核心代码元素匹配');
-      }
-    }
-
-    return finalScore >= 40;
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Navbar />
       
-      {/* 项目头部 */}
-      <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link to="/projects" className="inline-flex items-center text-green-400 hover:text-green-300 font-medium mb-8 transition-colors">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="mb-8">
+          <Link to="/projects" className="inline-flex items-center text-green-600 hover:text-green-800 font-medium transition-colors">
             <ArrowLeft className="w-5 h-5 mr-2" />
             <span>返回项目列表</span>
           </Link>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="p-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl">
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-12">
+          <div className="bg-gradient-to-r from-green-600 to-emerald-700 p-8 text-white">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div className="flex items-start gap-6">
+                <div className="p-4 bg-white/20 rounded-xl backdrop-blur-sm">
                   {project.icon}
                 </div>
                 <div>
-                  <h1 className="text-3xl md:text-4xl font-bold mb-2">{project.title}</h1>
-                  <p className="text-gray-300">{project.description}</p>
+                  <h1 className="text-3xl md:text-4xl font-bold mb-3">{project.title}</h1>
+                  <p className="text-green-100 text-lg max-w-2xl">{project.description}</p>
                 </div>
               </div>
-              
-              <div className="flex flex-wrap gap-3 mb-6">
-                {project.tags.map((tag, index) => (
-                  <span key={index} className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm border border-green-500/30">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              
-              <div className="flex flex-wrap items-center gap-6 text-sm">
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  {project.duration}
+              <div className="flex flex-wrap gap-4 items-center">
+                <div className="flex items-center gap-2 text-sm bg-white/20 px-4 py-2 rounded-full">
+                  <Star className="w-4 h-4" />
+                  {project.rating}
                 </div>
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  {project.learners} 学习者
-                </div>
-                <div className="flex items-center gap-2">
-                  <Star className="w-4 h-4 text-yellow-400" />
-                  {project.rating} 评分
-                </div>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  project.difficulty === '高级' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' :
-                  project.difficulty === '中级' ? 'bg-green-500/20 text-green-300 border border-green-500/30' :
-                  'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                }`}>
+                <div className={`px-4 py-2 rounded-full text-sm font-medium ${project.difficulty === "高级" ? "bg-purple-100 text-purple-700" : "bg-green-100 text-green-700"}`}>
                   {project.difficulty}
-                </span>
-              </div>
-            </div>
-            
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-              <button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 rounded-xl font-bold text-lg hover:shadow-lg hover:shadow-green-500/25 transition-all mb-4 flex items-center justify-center gap-2">
-                <PlayCircle className="w-5 h-5" />
-                开始项目
-              </button>
-              <div className="flex items-center justify-center gap-4 text-sm">
-                <button className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
-                  <Share2 className="w-4 h-4" />
-                  分享
-                </button>
-                <button className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
-                  <BookOpen className="w-4 h-4" />
-                  收藏
-                </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+          
+          <div className="p-6 border-b border-gray-100">
+            <div className="flex flex-wrap gap-3">
+              {project.tags.map((tag: string, idx: number) => (
+                <span key={idx} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* 主内容区 */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* 项目章节 */}
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-green-600" />
-                项目章节
-              </h2>
-              <div className="space-y-3">
-                {project.chapters.map((chapter, index) => (
-                  <div key={chapter.id} className="border border-gray-200 rounded-lg overflow-hidden">
-                    <div 
-                      onClick={() => toggleChapter(chapter.id)}
-                      className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-medium text-sm ${
-                          expandedChapter === chapter.id ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'
-                        }`}>
-                          {index + 1}
-                        </div>
-                        <div>
-                          <div className="font-medium text-gray-900">{chapter.title}</div>
-                          <div className="text-sm text-gray-500">{chapter.duration}</div>
-                        </div>
-                      </div>
-                      {expandedChapter === chapter.id ? (
-                        <ChevronDown className="w-5 h-5 text-green-600" />
-                      ) : (
-                        <ChevronRight className="w-5 h-5 text-gray-400" />
-                      )}
+          <div className="p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <Award className="w-5 h-5 text-yellow-500" />
+              技能提升
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {project.skills.map((skill: string, idx: number) => (
+                <div key={idx} className="p-3 bg-green-50 rounded-lg border border-green-100 text-center text-green-800 font-medium text-sm">
+                  {skill}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-4">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <BookOpen className="w-6 h-6 text-green-600" />
+              项目章节
+            </h2>
+            
+            {project.chapters.map((chapter: any) => (
+              <div key={chapter.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <button
+                  onClick={() => toggleChapter(chapter.id)}
+                  className="w-full p-5 flex items-center justify-between hover:bg-gray-50 transition-colors text-left"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${expandedChapter === chapter.id ? "bg-green-500 text-white" : "bg-gray-200 text-gray-600"}`}>
+                      {chapter.id}
                     </div>
-                    
-                    {expandedChapter === chapter.id && chapter.content && (
-                      <div className="p-4 pt-0 border-t border-gray-100">
-                        <div className="mb-6">
-                          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                            <BookOpen className="w-4 h-4 text-green-600" />
-                            学习内容
-                          </h3>
-                          <ul className="space-y-2">
-                            {chapter.content.map((item, idx) => (
-                              <li key={idx} className="flex items-start gap-3">
-                                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                                <span className="text-gray-700">{item}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                        
-                        {chapter.exercises && chapter.exercises.length > 0 && (
-                          <div>
-                            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                              <Code className="w-4 h-4 text-green-600" />
-                              练习题
-                            </h3>
-                            <div className="space-y-6">
-                              {chapter.exercises.map((exercise, idx) => {
-                                const key = getExerciseKey(chapter.id, idx);
-                                return (
-                                  <div key={idx} className="bg-gray-50 rounded-lg p-4">
-                                    <p className="font-medium text-gray-800 mb-4">{exercise.question}</p>
-                                    
-                                    {exercise.codeTemplate && (
-                                      <div className="mb-4">
-                                        <div className="flex items-center justify-between mb-2">
-                                          <span className="text-sm text-gray-600 flex items-center gap-1">
-                                            <BookOpen className="w-4 h-4" />
-                                            示范代码
-                                          </span>
-                                          <button
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-                                              copyCode(exercise.codeTemplate);
-                                              setUserCode(prev => ({ ...prev, [key]: exercise.codeTemplate }));
-                                            }}
-                                            className="p-1.5 bg-white rounded hover:bg-gray-100 transition-colors text-sm text-gray-600 flex items-center gap-1"
-                                          >
-                                            {copiedCode === exercise.codeTemplate ? (
-                                              <Check className="w-3.5 h-3.5 text-green-600" />
-                                            ) : (
-                                              <Copy className="w-3.5 h-3.5" />
-                                            )}
-                                            复制
-                                          </button>
-                                        </div>
-                                        <pre className="bg-blue-900 text-blue-100 p-3 rounded-lg text-sm overflow-x-auto max-h-48 overflow-y-auto">
-                                          <code>{exercise.codeTemplate}</code>
-                                        </pre>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">{chapter.title}</h3>
+                      <p className="text-sm text-gray-500">{chapter.duration}</p>
+                    </div>
+                  </div>
+                  {expandedChapter === chapter.id ? <ChevronDown className="w-5 h-5 text-gray-400" /> : <ChevronRight className="w-5 h-5 text-gray-400" />}
+                </button>
+                
+                {expandedChapter === chapter.id && (
+                  <div className="p-5 border-t border-gray-100 space-y-6">
+                    {chapter.content && chapter.content.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                          <BookOpen className="w-4 h-4 text-green-600" />
+                          学习内容
+                        </h4>
+                        <ul className="space-y-2">
+                          {chapter.content.map((item: string, idx: number) => (
+                            <li key={idx} className="flex items-start gap-2 text-gray-700">
+                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {chapter.exercises && chapter.exercises.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                          <Code className="w-4 h-4 text-green-600" />
+                          练习题
+                        </h4>
+                        <div className="space-y-6">
+                          {chapter.exercises.map((exercise: any, exerciseIdx: number) => {
+                            const key = getExerciseKey(chapter.id, exerciseIdx);
+                            return (
+                              <div key={exerciseIdx} className="bg-gray-50 rounded-lg p-5 border border-gray-200">
+                                <p className="font-medium text-gray-900 mb-4">{exercise.question}</p>
+                                
+                                {exercise.codeTemplate && (
+                                  <>
+                                    <div className="mb-4">
+                                      <div className="flex items-center justify-between mb-2">
+                                        <span className="text-sm text-gray-600 flex items-center gap-1">
+                                          <BookOpen className="w-4 h-4" />
+                                          示范代码
+                                        </span>
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            copyCode(exercise.codeTemplate);
+                                            setUserCode(prev => ({ ...prev, [key]: exercise.codeTemplate }));
+                                          }}
+                                          className="p-1.5 bg-white rounded hover:bg-gray-100 transition-colors text-sm text-gray-600 flex items-center gap-1 border border-gray-300"
+                                        >
+                                          {copiedCode === exercise.codeTemplate ? (
+                                            <><Check className="w-3.5 h-3.5 text-green-600" /> 已复制</>
+                                          ) : (
+                                            <><Copy className="w-3.5 h-3.5" /> 复制</>
+                                          )}
+                                        </button>
                                       </div>
-                                    )}
-                                    
+                                      <div className="bg-blue-50 rounded-lg p-4 border border-blue-200 max-h-48 overflow-y-auto">
+                                        <pre className="text-sm text-blue-900 whitespace-pre-wrap font-mono">{exercise.codeTemplate}</pre>
+                                      </div>
+                                    </div>
+
                                     <div className="mb-4">
                                       <div className="flex items-center justify-between mb-2">
                                         <span className="text-sm text-gray-600 flex items-center gap-1">
@@ -679,23 +628,23 @@ export default function ProjectDetailPage() {
                                         <button
                                           onClick={(e) => {
                                             e.stopPropagation();
-                                            runCode(chapter.id, idx, exercise);
+                                            runCode(chapter.id, exerciseIdx, exercise);
                                           }}
                                           disabled={isRunning[key]}
                                           className="px-4 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-1"
                                         >
                                           <PlayCircle className="w-3.5 h-3.5" />
-                                          {isRunning[key] ? '运行中...' : '运行'}
+                                          {isRunning[key] ? "运行中..." : "运行代码"}
                                         </button>
                                       </div>
                                       <textarea
-                                        value={userCode[key] || ''}
+                                        value={userCode[key] || ""}
                                         onChange={(e) => setUserCode(prev => ({ ...prev, [key]: e.target.value }))}
-                                        className="w-full h-48 p-3 font-mono text-sm bg-gray-900 text-green-400 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        className="w-full h-48 p-4 font-mono text-sm bg-gray-900 text-green-400 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500 border-0"
                                         placeholder="在这里粘贴或编写你的代码..."
                                       />
                                     </div>
-                                    
+
                                     {codeOutput[key] && (
                                       <div className="mb-4">
                                         <div className="flex items-center justify-between mb-2">
@@ -704,106 +653,70 @@ export default function ProjectDetailPage() {
                                             运行结果
                                           </span>
                                           {codeResult[key] && (
-                                            <span className={`text-sm font-medium flex items-center gap-1 ${
-                                              codeResult[key] === 'correct' ? 'text-green-600' : 'text-red-600'
-                                            }`}>
-                                              {codeResult[key] === 'correct' ? (
-                                                <><CheckCircle className="w-4 h-4" /> 正确！</>
+                                            <span className={`text-sm font-medium flex items-center gap-1 ${codeResult[key] === "correct" ? "text-green-600" : "text-red-600"}`}>
+                                              {codeResult[key] === "correct" ? (
+                                                <><CheckCircle className="w-4 h-4" /> 代码正确！</>
                                               ) : (
                                                 <><XCircle className="w-4 h-4" /> 需要改进</>
                                               )}
                                             </span>
                                           )}
                                         </div>
-                                        <pre className="bg-gray-800 text-gray-100 p-3 rounded-lg text-sm overflow-x-auto max-h-32 overflow-y-auto">
-                                          <code>{codeOutput[key]}</code>
-                                        </pre>
-                                        {codeResult[key] === 'wrong' && (
-                                          <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800 flex items-start gap-2">
+                                        <div className="bg-gray-800 text-gray-100 p-4 rounded-lg text-sm overflow-x-auto max-h-32 overflow-y-auto">
+                                          <pre className="whitespace-pre-wrap">{codeOutput[key]}</pre>
+                                        </div>
+                                        {codeResult[key] === "wrong" && (
+                                          <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800 flex items-start gap-2">
                                             <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                                             <span>提示：请参考示范代码，检查语法和逻辑是否正确。</span>
                                           </div>
                                         )}
                                       </div>
                                     )}
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        )}
+                                  </>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
                     )}
                   </div>
-                ))}
+                )}
               </div>
-            </div>
-
-            {/* 学习目标 */}
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <Target className="w-5 h-5 text-green-600" />
-                学习目标
-              </h2>
-              <div className="space-y-3">
-                {project.learningObjectives.map((objective, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">{objective}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* 技能标签 */}
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <Award className="w-5 h-5 text-green-600" />
-                你将学到的技能
-              </h2>
-              <div className="flex flex-wrap gap-3">
-                {project.skills.map((skill, index) => (
-                  <span key={index} className="px-4 py-2 bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 rounded-full text-sm font-medium">
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
 
-          {/* 侧边栏 */}
           <div className="space-y-6">
-            {/* 项目资源 */}
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Download className="w-5 h-5 text-green-600" />
-                项目资源
-              </h3>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-8">
+              <div className="bg-gradient-to-r from-green-600 to-emerald-700 rounded-lg p-6 text-white text-center mb-4">
+                <PlayCircle className="w-12 h-12 mx-auto mb-3" />
+                <h3 className="font-bold text-lg mb-1">开始学习</h3>
+                <p className="text-green-100 text-sm">共 {project.chapters.length} 个章节</p>
+              </div>
               <div className="space-y-3">
-                {project.resources.map((resource, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
-                    <div className="flex items-center gap-3">
-                      <Code className="w-5 h-5 text-green-600" />
-                      <span className="text-gray-900">{resource}</span>
-                    </div>
-                    <Download className="w-4 h-4 text-gray-400" />
-                  </div>
-                ))}
+                <button className="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                  <Target className="w-5 h-5" />
+                  开始项目学习
+                </button>
+                <button className="w-full py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-all flex items-center justify-center gap-2">
+                  <Download className="w-5 h-5" />
+                  下载资料
+                </button>
               </div>
             </div>
 
-            {/* 相关课程 */}
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">相关课程</h3>
-              <div className="space-y-4">
-                <div className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
-                  <div className="text-lg mb-1">🐍 Python基础</div>
-                  <div className="text-sm text-gray-600">打好编程基础</div>
-                </div>
-                <div className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
-                  <div className="text-lg mb-1">📊 数据分析技术</div>
-                  <div className="text-sm text-gray-600">掌握数据分析技能</div>
-                </div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h3 className="font-semibold text-gray-900 mb-4">相关课程</h3>
+              <div className="space-y-3">
+                <Link to="/course/python-basics" className="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <div className="font-medium text-gray-900">Python基础</div>
+                  <div className="text-sm text-gray-500">打好编程基础</div>
+                </Link>
+                <Link to="/course/data-analysis" className="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <div className="font-medium text-gray-900">数据分析技术</div>
+                  <div className="text-sm text-gray-500">掌握数据分析技能</div>
+                </Link>
               </div>
             </div>
           </div>
