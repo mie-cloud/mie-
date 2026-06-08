@@ -482,11 +482,23 @@ export default function ProjectDetailPage() {
           if (!checkBalanced("{", "}")) errors.push("花括号{}不匹配");
           if (!checkBalanced("[", "]")) errors.push("方括号[]不匹配");
           
-          // 检查引号匹配
-          const singleQuotes = (code.match(/'/g) || []).length;
-          const doubleQuotes = (code.match(/"/g) || []).length;
-          if (singleQuotes % 2 !== 0) errors.push("单引号不匹配");
-          if (doubleQuotes % 2 !== 0) errors.push("双引号不匹配");
+          // 检查引号匹配 - 更智能的检测
+          let inQuote = null;
+          for (let i = 0; i < code.length; i++) {
+            const char = code[i];
+            if (char === '"' && inQuote === null) {
+              inQuote = '"';
+            } else if (char === '"' && inQuote === '"') {
+              inQuote = null;
+            } else if (char === "'" && inQuote === null) {
+              inQuote = "'";
+            } else if (char === "'" && inQuote === "'") {
+              inQuote = null;
+            }
+          }
+          
+          if (inQuote === '"') errors.push("双引号\"不匹配（缺少结束引号）");
+          if (inQuote === "'") errors.push("单引号'不匹配（缺少结束引号）");
 
           // 检查与示范代码的匹配度（如果有示范代码）
           if (exercise.codeTemplate) {
@@ -541,9 +553,9 @@ export default function ProjectDetailPage() {
         }
 
         if (errors.length > 0) {
-          output = "代码检查发现以下问题：\n\n";
-          errors.forEach(err => output += "❌ " + err + "\n");
-          output += "\n请参考示范代码进行修改后重新运行。";
+          output = "❌ 语法错误！\n\n代码检查发现以下问题：\n\n";
+          errors.forEach(err => output += "• " + err + "\n");
+          output += "\n请修复错误后重新运行。";
           isCorrect = false;
         } else {
           output = "✅ 代码检查通过！\n\n在实际环境中，这里会显示代码的执行输出结果。";
