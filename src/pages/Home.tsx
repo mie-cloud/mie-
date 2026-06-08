@@ -77,7 +77,8 @@ const learningPaths = [
     title: 'Python基础',
     description: '掌握Python编程基础',
     icon: '🐍',
-    active: true
+    active: true,
+    courseId: 'python-basics'
   },
   {
     id: 2,
@@ -85,7 +86,8 @@ const learningPaths = [
     title: '数据分析',
     description: '使用Pandas处理数据',
     icon: '📊',
-    active: false
+    active: false,
+    courseId: 'data-analysis'
   },
   {
     id: 3,
@@ -93,7 +95,8 @@ const learningPaths = [
     title: '数据可视化',
     description: '创建专业图表',
     icon: '📈',
-    active: false
+    active: false,
+    courseId: 'data-analysis'
   },
   {
     id: 4,
@@ -101,7 +104,8 @@ const learningPaths = [
     title: '实战项目',
     description: '综合技能提升',
     icon: '🎯',
-    active: false
+    active: false,
+    courseId: 'supply-chain'
   }
 ];
 
@@ -216,7 +220,7 @@ export default function Home() {
             {learningPaths.map((path) => (
               <Link
                 key={path.id}
-                to={path.id === 1 ? "/course/python-basics" : "#"}
+                to={`/course/${path.courseId}`}
                 className={`p-8 rounded-2xl cursor-pointer transition-all relative ${
                   path.active
                     ? 'bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-xl'
