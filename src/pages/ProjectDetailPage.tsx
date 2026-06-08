@@ -483,7 +483,7 @@ export default function ProjectDetailPage() {
     if (totalLength < 30) penalty += 20;
     else if (totalLength < 50) penalty += 10;
 
-    const finalScore = Math.max(0, score - penalty);
+    let finalScore = Math.max(0, score - penalty);
     
     if (exercise.codeTemplate && templateCode.length > 50) {
       let exactMatches = 0;
