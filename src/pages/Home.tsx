@@ -96,7 +96,7 @@ const learningPaths = [
     description: '创建专业图表',
     icon: '📈',
     active: false,
-    courseId: 'data-analysis'
+    courseId: 'data-analysis#chapter4'
   },
   {
     id: 4,

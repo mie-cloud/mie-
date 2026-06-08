@@ -1,4 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import { ArrowLeft, Database, Clock, Users, Star, Award, Target, CheckCircle, PlayCircle, Download, Share2, BookOpen, Code } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -63,6 +64,10 @@ const projectsData = {
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>();
   const project = projectsData[parseInt(id)] || projectsData[1];
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [id]);
 
   return (
     <div className="min-h-screen bg-gray-50">

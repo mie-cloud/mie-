@@ -119,9 +119,13 @@ export default function CourseDetail() {
       const mockOutput = simulateCodeExecution(code);
       output = mockOutput.output;
       isCorrect = mockOutput.isCorrect(exercise.expectedOutput);
+      if (!isCorrect) {
+        output = `❌ 输出不匹配\n\n你的输出:\n${output || '(无输出)'}\n\n期望输出:\n${exercise.expectedOutput}`;
+      }
     } else {
-      isCorrect = validateCodeStructure(code);
-      output = isCorrect ? '代码语法正确！' : '代码可能存在语法问题';
+      const validation = validateCodeStructure(code);
+      isCorrect = validation.isValid;
+      output = validation.message;
     }
 
     setExerciseAnswers(prev => ({
@@ -137,13 +141,45 @@ export default function CourseDetail() {
 
   const simulateCodeExecution = (code: string) => {
     let output = '';
+    let variableValues: Record<string, string | number> = {};
     const lines = code.split('\n');
     
     lines.forEach(line => {
-      if (line.trim().startsWith('print(')) {
+      const trimmedLine = line.trim();
+      
+      if (trimmedLine.startsWith('print(')) {
         const match = line.match(/print\(['"]?(.+?)['"]?\)/);
         if (match) {
-          output += match[1] + '\n';
+          let value = match[1];
+          if (variableValues[value] !== undefined) {
+            value = String(variableValues[value]);
+          }
+          output += value + '\n';
+        } else {
+          const exprMatch = line.match(/print\((.+)\)/);
+          if (exprMatch) {
+            try {
+              const result = evaluateExpression(exprMatch[1], variableValues);
+              output += String(result) + '\n';
+            } catch {
+              output += exprMatch[1] + '\n';
+            }
+          }
+        }
+      } else if (trimmedLine.includes('=')) {
+        const parts = trimmedLine.split('=');
+        if (parts.length === 2) {
+          const varName = parts[0].trim();
+          const varValue = parts[1].trim();
+          if (!isNaN(Number(varValue))) {
+            variableValues[varName] = Number(varValue);
+          } else if (varValue.startsWith('"') && varValue.endsWith('"')) {
+            variableValues[varName] = varValue.slice(1, -1);
+          } else if (varValue.startsWith("'") && varValue.endsWith("'")) {
+            variableValues[varName] = varValue.slice(1, -1);
+          } else {
+            variableValues[varName] = varValue;
+          }
         }
       }
     });
@@ -158,10 +194,60 @@ export default function CourseDetail() {
     };
   };
 
+  const evaluateExpression = (expr: string, variables: Record<string, string | number>): number => {
+    let exprValue = expr;
+    for (const [key, value] of Object.entries(variables)) {
+      if (typeof value === 'number') {
+        exprValue = exprValue.replace(new RegExp(`\\b${key}\\b`, 'g'), String(value));
+      }
+    }
+    try {
+      return new Function(`return ${exprValue}`)();
+    } catch {
+      return NaN;
+    }
+  };
+
   const validateCodeStructure = (code: string) => {
-    return code.trim().length > 0 && 
-           !code.includes('SyntaxError') &&
-           !code.includes('IndentationError');
+    const lines = code.trim().split('\n');
+    if (lines.length === 0 || code.trim().length === 0) {
+      return { isValid: false, message: '代码不能为空' };
+    }
+    
+    let indentLevel = 0;
+    const errors: string[] = [];
+    
+    lines.forEach((line, index) => {
+      const trimmed = line.trim();
+      const lineNum = index + 1;
+      
+      if (trimmed === '') return;
+      
+      const leadingSpaces = line.length - trimmed.length;
+      const currentIndent = Math.floor(leadingSpaces / 4);
+      
+      if (trimmed.endsWith(':')) {
+        indentLevel++;
+      } else if (currentIndent > indentLevel) {
+        errors.push(`第 ${lineNum} 行：缩进层级错误`);
+      } else if (currentIndent < indentLevel && !trimmed.startsWith('return') && !trimmed.startsWith('break') && !trimmed.startsWith('continue')) {
+        indentLevel = currentIndent;
+      }
+      
+      if (trimmed.startsWith('def ') && !trimmed.includes('(')) {
+        errors.push(`第 ${lineNum} 行：函数定义缺少括号`);
+      }
+      
+      if ((trimmed.startsWith('if ') || trimmed.startsWith('elif ') || trimmed.startsWith('while ') || trimmed.startsWith('for ')) && !trimmed.includes(':')) {
+        errors.push(`第 ${lineNum} 行：条件语句或循环缺少冒号`);
+      }
+    });
+    
+    if (errors.length > 0) {
+      return { isValid: false, message: errors.join('；') };
+    }
+    
+    return { isValid: true, message: '代码结构正确' };
   };
 
   const resetCode = (chapterId: string, exerciseIdx: number) => {
