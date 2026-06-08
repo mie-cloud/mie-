@@ -703,6 +703,287 @@ export const courses: Course[] = [
     skills: ['数据清洗', '数据可视化', '统计分析', 'Pandas', 'NumPy', 'Matplotlib']
   },
   {
+    id: 'data-visualization',
+    title: '数据可视化',
+    shortDesc: '数据可视化技术',
+    description: '学习数据可视化的基本原理和方法，掌握 Matplotlib、Seaborn、Plotly 等可视化库的使用，能够创建专业的图表和数据仪表盘，有效地传达数据洞察。',
+    icon: '📊',
+    objectives: [
+      '掌握数据可视化的基本原则和设计理念',
+      '熟练使用 Matplotlib 进行基础绘图',
+      '学会使用 Seaborn 创建美观的统计图表',
+      '掌握交互式可视化工具的使用',
+      '能够根据数据类型选择合适的可视化方式'
+    ],
+    chapters: [
+      {
+        id: 'chapter1',
+        title: '数据可视化基础',
+        content: [
+          '数据可视化的重要性和原则',
+          '图表类型选择指南',
+          '颜色和布局设计',
+          '数据可视化工具介绍'
+        ],
+        exercises: [
+          {
+            type: 'multiple-choice',
+            question: '以下哪种图表适合展示数据随时间的变化趋势？',
+            options: ['饼图', '折线图', '散点图', '箱线图'],
+            correctAnswer: '折线图'
+          },
+          {
+            type: 'multiple-choice',
+            question: '以下哪种图表适合展示不同类别的数据对比？',
+            options: ['折线图', '柱状图', '热力图', '雷达图'],
+            correctAnswer: '柱状图'
+          },
+          {
+            type: 'multiple-choice',
+            question: '在数据可视化中，"少即是多"原则是指？',
+            options: ['图表越小越好', '只展示最重要的信息', '使用最少的颜色', '以上都是'],
+            correctAnswer: '只展示最重要的信息'
+          },
+          {
+            type: 'code',
+            question: '导入 Matplotlib 并创建一个简单的折线图',
+            codeTemplate: 'import matplotlib.pyplot as plt\nimport numpy as np\n\n# 创建数据\nx = np.arange(1, 11)\ny = np.array([2, 4, 6, 8, 10, 12, 14, 16, 18, 20])\n\n# 创建折线图\nplt.plot(x, y, marker=\'o\', color=\'blue\', linewidth=2)\nplt.xlabel(\'X轴\')\nplt.ylabel(\'Y轴\')\nplt.title(\'简单折线图\')\nplt.grid(True, alpha=0.3)\nplt.show()',
+            expectedOutput: '',
+            explanation: '这是一个基础的 Matplotlib 折线图示例，展示了如何创建图表、设置标签和标题。'
+          },
+          {
+            type: 'code',
+            question: '创建一个柱状图展示类别数据',
+            codeTemplate: 'import matplotlib.pyplot as plt\n\n# 数据\ncategories = [\'A\', \'B\', \'C\', \'D\', \'E\']\nvalues = [23, 45, 17, 38, 29]\n\n# 创建柱状图\nplt.figure(figsize=(10, 6))\nplt.bar(categories, values, color=[\'#FF6B6B\', \'#4ECDC4\', \'#45B7D1\', \'#96CEB4\', \'#FFEAA7\'])\nplt.xlabel(\'类别\')\nplt.ylabel(\'数值\')\nplt.title(\'类别数据对比\')\nplt.xticks(rotation=45)\nplt.tight_layout()\nplt.show()',
+            expectedOutput: '',
+            explanation: '这个例子展示了如何创建美观的柱状图，包括自定义颜色和旋转坐标轴标签。'
+          },
+          {
+            type: 'code',
+            question: '创建一个散点图展示两个变量的关系',
+            codeTemplate: 'import matplotlib.pyplot as plt\nimport numpy as np\n\n# 生成随机数据\nnp.random.seed(42)\nx = np.random.randn(100)\ny = 2 * x + np.random.randn(100) * 0.5\n\n# 创建散点图\nplt.figure(figsize=(8, 6))\nplt.scatter(x, y, alpha=0.6, color=\'purple\', s=50)\nplt.xlabel(\'变量 X\')\nplt.ylabel(\'变量 Y\')\nplt.title(\'散点图示例\')\nplt.grid(True, alpha=0.3)\nplt.show()',
+            expectedOutput: '',
+            explanation: '散点图非常适合展示两个变量之间的关系，alpha 参数控制透明度，让重叠的数据点更容易看清。'
+          }
+        ]
+      },
+      {
+        id: 'chapter2',
+        title: 'Matplotlib 高级技巧',
+        content: [
+          '子图布局和多图表',
+          '自定义图表样式',
+          '保存图表和导出',
+          '高级图表类型'
+        ],
+        exercises: [
+          {
+            type: 'multiple-choice',
+            question: 'Matplotlib 中用于创建子图的函数是？',
+            options: ['subplot()', 'figure()', 'plot()', 'axes()'],
+            correctAnswer: 'subplot()'
+          },
+          {
+            type: 'multiple-choice',
+            question: '以下哪种方法可以保存 Matplotlib 图表？',
+            options: ['plt.save()', 'plt.savefig()', 'plt.export()', 'plt.write()'],
+            correctAnswer: 'plt.savefig()'
+          },
+          {
+            type: 'multiple-choice',
+            question: '在 Matplotlib 中，\'figsize\' 参数用于设置？',
+            options: ['图表标题大小', '图表颜色', '图表尺寸', '图表字体'],
+            correctAnswer: '图表尺寸'
+          },
+          {
+            type: 'code',
+            question: '创建包含多个子图的图表布局',
+            codeTemplate: 'import matplotlib.pyplot as plt\nimport numpy as np\n\n# 创建数据\nx = np.linspace(0, 10, 100)\ny1 = np.sin(x)\ny2 = np.cos(x)\ny3 = x**2\ny4 = np.log(x + 1)\n\n# 创建 2x2 子图布局\nfig, axes = plt.subplots(2, 2, figsize=(12, 8))\n\n# 子图1：正弦曲线\naxes[0, 0].plot(x, y1, color=\'red\')\naxes[0, 0].set_title(\'sin(x)\')\naxes[0, 0].grid(True, alpha=0.3)\n\n# 子图2：余弦曲线\naxes[0, 1].plot(x, y2, color=\'blue\')\naxes[0, 1].set_title(\'cos(x)\')\naxes[0, 1].grid(True, alpha=0.3)\n\n# 子图3：二次曲线\naxes[1, 0].plot(x, y3, color=\'green\')\naxes[1, 0].set_title(\'x^2\')\naxes[1, 0].grid(True, alpha=0.3)\n\n# 子图4：对数曲线\naxes[1, 1].plot(x, y4, color=\'orange\')\naxes[1, 1].set_title(\'log(x+1)\')\naxes[1, 1].grid(True, alpha=0.3)\n\nplt.tight_layout()\nplt.show()',
+            expectedOutput: '',
+            explanation: '这个例子展示了如何使用 subplots 创建多个子图的布局，以及如何在各个子图中绘制不同的数据。'
+          },
+          {
+            type: 'code',
+            question: '创建一个带有双 Y 轴的图表',
+            codeTemplate: 'import matplotlib.pyplot as plt\nimport numpy as np\n\n# 数据\nx = np.arange(2020, 2030)\nsales = np.array([150, 180, 200, 220, 250, 280, 300, 320, 350, 380])\nprofit_margin = np.array([0.15, 0.16, 0.14, 0.18, 0.20, 0.19, 0.21, 0.22, 0.20, 0.23])\n\n# 创建图表\nfig, ax1 = plt.subplots(figsize=(12, 6))\n\n# 第一个 Y 轴：销售额\nax1.bar(x, sales, color=\'skyblue\', alpha=0.7, label=\'销售额\')\nax1.set_xlabel(\'年份\')\nax1.set_ylabel(\'销售额（万元）\', color=\'blue\')\nax1.tick_params(axis=\'y\', labelcolor=\'blue\')\n\n# 第二个 Y 轴：利润率\nax2 = ax1.twinx()\nax2.plot(x, profit_margin, color=\'red\', marker=\'o\', linewidth=2, label=\'利润率\')\nax2.set_ylabel(\'利润率\', color=\'red\')\nax2.tick_params(axis=\'y\', labelcolor=\'red\')\n\nplt.title(\'销售额与利润率趋势\')\nplt.xticks(rotation=45)\nplt.tight_layout()\nplt.show()',
+            expectedOutput: '',
+            explanation: '双 Y 轴图表可以在同一个图表中展示两个不同尺度的数据，这在比较相关指标时非常有用。'
+          },
+          {
+            type: 'code',
+            question: '创建箱线图展示数据分布',
+            codeTemplate: 'import matplotlib.pyplot as plt\nimport numpy as np\n\n# 生成模拟数据\nnp.random.seed(42)\ndata1 = np.random.normal(100, 15, 100)\ndata2 = np.random.normal(90, 20, 100)\ndata3 = np.random.normal(110, 10, 100)\ndata4 = np.random.normal(95, 25, 100)\n\ndata = [data1, data2, data3, data4]\n\n# 创建箱线图\nplt.figure(figsize=(10, 6))\nboxes = plt.boxplot(data, labels=[\'组A\', \'组B\', \'组C\', \'组D\'], patch_artist=True)\n\n# 设置颜色\ncolors = [\'#FF6B6B\', \'#4ECDC4\', \'#45B7D1\', \'#96CEB4\']\nfor patch, color in zip(boxes[\'boxes\'], colors):\n    patch.set_facecolor(color)\n    patch.set_alpha(0.7)\n\nplt.ylabel(\'数值\')\nplt.title(\'多组数据箱线图\')\nplt.grid(True, axis=\'y\', alpha=0.3)\nplt.show()',
+            expectedOutput: '',
+            explanation: '箱线图是展示数据分布的重要工具，可以直观地看到中位数、四分位数和异常值。'
+          }
+        ]
+      },
+      {
+        id: 'chapter3',
+        title: 'Seaborn 统计可视化',
+        content: [
+          'Seaborn 基础和样式',
+          '统计图表类型',
+          '热力图和相关性可视化',
+          '分组和分类数据可视化'
+        ],
+        exercises: [
+          {
+            type: 'multiple-choice',
+            question: 'Seaborn 是基于哪个库构建的？',
+            options: ['Plotly', 'Matplotlib', 'Bokeh', 'ggplot'],
+            correctAnswer: 'Matplotlib'
+          },
+          {
+            type: 'multiple-choice',
+            question: 'Seaborn 中用于查看变量相关性的热力图函数是？',
+            options: ['heatmap()', 'correlation()', 'pairplot()', 'jointplot()'],
+            correctAnswer: 'heatmap()'
+          },
+          {
+            type: 'multiple-choice',
+            question: 'Seaborn 的 pairplot() 函数用于？',
+            options: ['绘制成对变量关系', '绘制热力图', '绘制箱线图', '绘制散点图'],
+            correctAnswer: '绘制成对变量关系'
+          },
+          {
+            type: 'code',
+            question: '使用 Seaborn 创建热力图展示相关性',
+            codeTemplate: 'import seaborn as sns\nimport matplotlib.pyplot as plt\nimport numpy as np\nimport pandas as pd\n\n# 创建模拟数据\nnp.random.seed(42)\ndata = pd.DataFrame({\n    \'数学\': np.random.normal(80, 10, 100),\n    \'语文\': np.random.normal(75, 12, 100),\n    \'英语\': np.random.normal(85, 8, 100),\n    \'物理\': np.random.normal(78, 15, 100),\n    \'化学\': np.random.normal(82, 11, 100)\n})\n\n# 计算相关性矩阵\ncorrelation_matrix = data.corr()\n\n# 创建热力图\nplt.figure(figsize=(10, 8))\nsns.heatmap(correlation_matrix, annot=True, cmap=\'coolwarm\', center=0, square=True, linewidths=1)\nplt.title(\'学科成绩相关性热力图\')\nplt.show()',
+            expectedOutput: '',
+            explanation: '热力图是展示变量之间相关性的强大工具，使用颜色深浅表示相关性的强度。'
+          },
+          {
+            type: 'code',
+            question: '使用 Seaborn 创建成对图',
+            codeTemplate: 'import seaborn as sns\nimport matplotlib.pyplot as plt\nimport numpy as np\nimport pandas as pd\n\n# 使用内置的鸢尾花数据集\niris = sns.load_dataset(\'iris\')\n\n# 创建成对图\nsns.set_style("whitegrid")\ng = sns.pairplot(iris, hue="species", diag_kind="kde", palette="husl")\ng.fig.suptitle(\'鸢尾花数据集成对图\', y=1.02)\nplt.show()',
+            expectedOutput: '',
+            explanation: 'pairplot() 函数创建矩阵图，展示数据集中每对变量之间的关系，对角线是单变量分布图。'
+          },
+          {
+            type: 'code',
+            question: '使用 Seaborn 创建分类数据可视化',
+            codeTemplate: 'import seaborn as sns\nimport matplotlib.pyplot as plt\nimport pandas as pd\nimport numpy as np\n\n# 创建模拟数据\nnp.random.seed(42)\ndata = pd.DataFrame({\n    \'方法\': np.repeat([\'A\', \'B\', \'C\'], 50),\n    \'分数\': np.concatenate([\n        np.random.normal(75, 10, 50),\n        np.random.normal(82, 8, 50),\n        np.random.normal(70, 12, 50)\n    ])\n})\n\n# 创建分类箱线图\nplt.figure(figsize=(12, 5))\nplt.subplot(1, 2, 1)\nsns.boxplot(x=\'方法\', y=\'分数\', data=data, palette=\'Set2\')\nplt.title(\'不同方法的分数分布\')\n\n# 创建小提琴图\nplt.subplot(1, 2, 2)\nsns.violinplot(x=\'方法\', y=\'分数\', data=data, palette=\'Set2\')\nplt.title(\'不同方法的小提琴图\')\n\nplt.tight_layout()\nplt.show()',
+            expectedOutput: '',
+            explanation: 'Seaborn 提供了多种高级的分类数据可视化方法，如箱线图和小提琴图，可以很好地展示数据分布。'
+          }
+        ]
+      },
+      {
+        id: 'chapter4',
+        title: '交互式可视化',
+        content: [
+          'Plotly 基础',
+          '交互式图表类型',
+          '图表交互功能',
+          '仪表盘创建'
+        ],
+        exercises: [
+          {
+            type: 'multiple-choice',
+            question: 'Plotly 的特点是？',
+            options: ['静态图表', '交互式图表', '3D图表', '以上都是'],
+            correctAnswer: '以上都是'
+          },
+          {
+            type: 'multiple-choice',
+            question: 'Plotly Express 相比 plotly.graph_objects 的特点是？',
+            options: ['更难使用', '更简洁易用', '功能更少', '速度更快'],
+            correctAnswer: '更简洁易用'
+          },
+          {
+            type: 'multiple-choice',
+            question: '在 Plotly 中，hover_data 参数用于？',
+            options: ['设置图表颜色', '鼠标悬停显示的数据', '添加动画效果', '设置图表标题'],
+            correctAnswer: '鼠标悬停显示的数据'
+          },
+          {
+            type: 'code',
+            question: '使用 Plotly 创建交互式散点图',
+            codeTemplate: 'import plotly.express as px\nimport pandas as pd\nimport numpy as np\n\n# 创建模拟数据\nnp.random.seed(42)\ndata = pd.DataFrame({\n    \'x\': np.random.randn(200),\n    \'y\': np.random.randn(200),\n    \'大小\': np.random.uniform(10, 100, 200),\n    \'颜色\': np.random.choice([\'A\', \'B\', \'C\', \'D\'], 200),\n    \'标签\': [f\'点{i}\' for i in range(1, 201)]\n})\n\n# 创建交互式散点图\nfig = px.scatter(data, x=\'x\', y=\'y\', size=\'大小\', color=\'颜色\', \n                 hover_data=[\'标签\'], title=\'交互式散点图\',\n                 size_max=60, color_discrete_sequence=px.colors.qualitative.G10)\n\n# 美化图表\nfig.update_layout(\n    xaxis_title=\'X轴\',\n    yaxis_title=\'Y轴\',\n    height=600,\n    showlegend=True\n)\n\nfig.show()',
+            expectedOutput: '',
+            explanation: 'Plotly 的散点图支持交互操作，如缩放、平移、悬停显示信息等。'
+          },
+          {
+            type: 'code',
+            question: '使用 Plotly 创建交互式线图',
+            codeTemplate: 'import plotly.express as px\nimport pandas as pd\nimport numpy as np\n\n# 创建数据\nnp.random.seed(42)\ndates = pd.date_range(start=\'2023-01-01\', periods=365, freq=\'D\')\ndata = pd.DataFrame({\n    \'日期\': dates,\n    \'销售额A\': np.cumsum(np.random.randn(365)) + 100,\n    \'销售额B\': np.cumsum(np.random.randn(365)) + 150,\n    \'销售额C\': np.cumsum(np.random.randn(365)) + 120\n})\n\n# 转换为长格式\nmelted = data.melt(id_vars=[\'日期\'], var_name=\'产品\', value_name=\'销售额\')\n\n# 创建交互式线图\nfig = px.line(melted, x=\'日期\', y=\'销售额\', color=\'产品\', \n              title=\'销售额趋势（交互式）\',\n              labels={\'销售额\': \'销售额（万元）\', \'日期\': \'日期\'})\n\n# 美化图表\nfig.update_layout(\n    hovermode=\'x unified\',\n    height=600\n)\n\n# 添加范围选择器\nfig.update_xaxes(\n    rangeselector=dict(\n        buttons=list([\n            dict(count=1, label="1月", step="month", stepmode="backward"),\n            dict(count=6, label="6月", step="month", stepmode="backward"),\n            dict(count=1, label="全年", step="year", stepmode="todate"),\n            dict(step="all")\n        ])\n    ),\n    rangeslider=dict(visible=True),\n    type="date"\n)\n\nfig.show()',
+            expectedOutput: '',
+            explanation: '这个交互式线图支持日期范围选择、平移、缩放等交互功能，非常适合展示时间序列数据。'
+          },
+          {
+            type: 'code',
+            question: '使用 Plotly 创建交互式饼图',
+            codeTemplate: 'import plotly.express as px\nimport pandas as pd\n\n# 创建数据\ndata = pd.DataFrame({\n    \'类别\': [\'电子产品\', \'服装\', \'食品\', \'家居用品\', \'其他\'],\n    \'销售额\': [3500, 2800, 2200, 1800, 900],\n    \'利润率\': [0.25, 0.18, 0.15, 0.20, 0.12]\n})\n\n# 创建交互式饼图\nfig = px.pie(data, values=\'销售额\', names=\'类别\',\n             title=\'各类别销售额占比\',\n             color_discrete_sequence=px.colors.qualitative.Set3,\n             hover_data=[\'利润率\'],\n             labels={\'利润率\': \'利润率\'})\n\n# 美化图表\nfig.update_traces(textposition=\'inside\', textinfo=\'percent+label\', \n                  hovertemplate=\'%{label}<br>销售额: %{value}万元<br>利润率: %{customdata[0]:.1%}<extra></extra>\')\n\nfig.update_layout(height=600)\nfig.show()',
+            expectedOutput: '',
+            explanation: '交互式饼图支持悬停显示详细信息，点击图例可以切换类别显示，非常适合展示占比数据。'
+          }
+        ]
+      },
+      {
+        id: 'chapter5',
+        title: '数据可视化实战',
+        content: [
+          '真实数据分析与可视化',
+          '创建数据仪表盘',
+          '可视化最佳实践',
+          '可视化案例研究'
+        ],
+        exercises: [
+          {
+            type: 'multiple-choice',
+            question: '创建数据仪表盘时，最重要的原则是？',
+            options: ['美观性', '信息清晰度', '动画效果', '颜色数量'],
+            correctAnswer: '信息清晰度'
+          },
+          {
+            type: 'multiple-choice',
+            question: '在选择图表类型时，应该优先考虑？',
+            options: ['个人偏好', '数据特征和传达目标', '图表美观度', '颜色多少'],
+            correctAnswer: '数据特征和传达目标'
+          },
+          {
+            type: 'multiple-choice',
+            question: '以下哪种做法是数据可视化的最佳实践？',
+            options: ['使用尽量多的颜色', '在一个图表中展示尽可能多的信息', '确保图表有清晰的标题和标签', '以上都不是'],
+            correctAnswer: '确保图表有清晰的标题和标签'
+          },
+          {
+            type: 'code',
+            question: '创建销售数据综合分析仪表盘',
+            codeTemplate: 'import matplotlib.pyplot as plt\nimport seaborn as sns\nimport pandas as pd\nimport numpy as np\nfrom matplotlib.gridspec import GridSpec\n\n# 设置风格\nsns.set_style("whitegrid")\nplt.rcParams[\'font.sans-serif\'] = [\'SimHei\']  # 用来正常显示中文标签\nplt.rcParams[\'axes.unicode_minus\'] = False  # 用来正常显示负号\n\n# 创建模拟销售数据\nnp.random.seed(42)\ndates = pd.date_range(start=\'2023-01-01\', periods=365, freq=\'D\')\nsales_data = pd.DataFrame({\n    \'日期\': dates,\n    \'销售额\': np.random.normal(10000, 2000, 365).cumsum() / 365 + 5000,\n    \'客户数\': np.random.randint(50, 200, 365),\n    \'地区\': np.random.choice([\'东区\', \'西区\', \'南区\', \'北区\'], 365),\n    \'产品类别\': np.random.choice([\'A\', \'B\', \'C\', \'D\'], 365)\n})\nsales_data[\'月份\'] = sales_data[\'日期\'].dt.to_period(\'M\')\n\n# 创建仪表盘\nfig = plt.figure(figsize=(16, 12))\ngs = GridSpec(3, 2, figure=fig, hspace=0.3, wspace=0.25)\n\n# 1. 销售趋势图\nax1 = fig.add_subplot(gs[0, :])\nsales_data.groupby(\'日期\')[\'销售额\'].sum().plot(ax=ax1, color=\'#4ECDC4\', linewidth=2)\nax1.set_title(\'销售趋势图\', fontsize=14, fontweight=\'bold\')\nax1.set_ylabel(\'销售额（元）\')\nax1.grid(True, alpha=0.3)\n\n# 2. 各地区销售额\nax2 = fig.add_subplot(gs[1, 0])\nsns.barplot(x=\'地区\', y=\'销售额\', data=sales_data, ax=ax2, palette=\'Set2\')\nax2.set_title(\'各地区销售额对比\', fontsize=12, fontweight=\'bold\')\n\n# 3. 各产品类别销售额\nax3 = fig.add_subplot(gs[1, 1])\nsns.barplot(x=\'产品类别\', y=\'销售额\', data=sales_data, ax=ax3, palette=\'Pastel1\')\nax3.set_title(\'各产品类别销售额对比\', fontsize=12, fontweight=\'bold\')\n\n# 4. 客户数分布\nax4 = fig.add_subplot(gs[2, 0])\nsns.histplot(sales_data[\'客户数\'], bins=20, kde=True, ax=ax4, color=\'#FF6B6B\', alpha=0.6)\nax4.set_title(\'每日客户数分布\', fontsize=12, fontweight=\'bold\')\n\n# 5. 销售额与客户数关系\nax5 = fig.add_subplot(gs[2, 1])\nsns.scatterplot(x=\'客户数\', y=\'销售额\', data=sales_data, hue=\'地区\', ax=ax5, alpha=0.6, s=50)\nax5.set_title(\'客户数与销售额关系\', fontsize=12, fontweight=\'bold\')\n\nplt.suptitle(\'销售数据综合分析仪表盘\', fontsize=18, fontweight=\'bold\', y=0.995)\nplt.tight_layout()\nplt.show()',
+            expectedOutput: '',
+            explanation: '这个综合分析仪表盘展示了如何使用多种图表类型来全面分析销售数据，包括趋势图、对比图、分布图和关系图。'
+          },
+          {
+            type: 'code',
+            question: '创建客户行为分析可视化',
+            codeTemplate: 'import matplotlib.pyplot as plt\nimport seaborn as sns\nimport pandas as pd\nimport numpy as np\nfrom matplotlib.gridspec import GridSpec\n\n# 设置风格\nsns.set_style("whitegrid")\nplt.rcParams[\'font.sans-serif\'] = [\'SimHei\']\nplt.rcParams[\'axes.unicode_minus\'] = False\n\n# 创建模拟客户数据\nnp.random.seed(42)\ncustomer_data = pd.DataFrame({\n    \'客户ID\': range(1, 501),\n    \'年龄\': np.random.normal(35, 12, 500).astype(int).clip(18, 70),\n    \'收入\': np.random.normal(8000, 3000, 500).astype(int).clip(2000, 20000),\n    \'购买频率\': np.random.poisson(5, 500),\n    \'总消费\': np.random.normal(5000, 2000, 500).clip(500, 20000),\n    \'客户等级\': np.random.choice([\'普通会员\', \'银卡会员\', \'金卡会员\', \'钻石会员\'], 500, p=[0.4, 0.3, 0.2, 0.1]),\n    \'渠道\': np.random.choice([\'APP\', \'网站\', \'微信\', \'门店\'], 500)\n})\n\n# 创建分析仪表盘\nfig = plt.figure(figsize=(16, 12))\ngs = GridSpec(3, 2, figure=fig, hspace=0.35, wspace=0.25)\n\n# 1. 年龄分布\nax1 = fig.add_subplot(gs[0, 0])\nsns.histplot(x=\'年龄\', data=customer_data, bins=15, kde=True, ax=ax1, color=\'#45B7D1\', alpha=0.6)\nax1.set_title(\'客户年龄分布\', fontsize=12, fontweight=\'bold\')\n\n# 2. 客户等级构成\nax2 = fig.add_subplot(gs[0, 1])\ngrade_order = [\'普通会员\', \'银卡会员\', \'金卡会员\', \'钻石会员\']\nsns.countplot(x=\'客户等级\', data=customer_data, order=grade_order, ax=ax2, palette=\'viridis\')\nax2.set_title(\'客户等级构成\', fontsize=12, fontweight=\'bold\')\n\n# 3. 渠道分布\nax3 = fig.add_subplot(gs[1, 0])\nchannel_data = customer_data[\'渠道\'].value_counts()\nax3.pie(channel_data.values, labels=channel_data.index, autopct=\'%1.1f%%\', colors=sns.color_palette(\'pastel\'))\nax3.set_title(\'客户来源渠道分布\', fontsize=12, fontweight=\'bold\')\n\n# 4. 收入与消费关系\nax4 = fig.add_subplot(gs[1, 1])\nsns.scatterplot(x=\'收入\', y=\'总消费\', hue=\'客户等级\', data=customer_data, ax=ax4, alpha=0.6, s=50)\nax4.set_title(\'收入与消费关系\', fontsize=12, fontweight=\'bold\')\n\n# 5. 购买频率与消费分析\nax5 = fig.add_subplot(gs[2, :])\nsns.boxplot(x=\'购买频率\', y=\'总消费\', data=customer_data, ax=ax5, palette=\'Set2\')\nax5.set_title(\'购买频率与消费金额分析\', fontsize=12, fontweight=\'bold\')\n\nplt.suptitle(\'客户行为分析仪表盘\', fontsize=18, fontweight=\'bold\', y=0.995)\nplt.show()',
+            expectedOutput: '',
+            explanation: '客户行为分析仪表盘从多个角度分析客户数据，包括年龄分布、等级构成、渠道来源、收入与消费关系等。'
+          }
+        ]
+      }
+    ],
+    assessment: [
+      { type: '平时作业', weight: 20 },
+      { type: '可视化项目', weight: 40 },
+      { type: '数据分析报告', weight: 20 },
+      { type: '期末考试', weight: 20 }
+    ],
+    learningCenter: {
+      resources: [
+        '《数据可视化之美》',
+        'Matplotlib官方文档',
+        'Seaborn官方文档',
+        'Plotly官方文档',
+        '数据可视化设计指南'
+      ],
+      progress: 0
+    },
+    skills: ['数据可视化', 'Matplotlib', 'Seaborn', 'Plotly', '图表设计', '数据分析']
+  },
+  {
     id: 'data-collection',
     title: '数据采集与处理',
     shortDesc: '网络爬虫与数据清洗',
