@@ -268,6 +268,40 @@ export default function CourseDetail() {
     let indentLevel = 0;
     const errors: string[] = [];
     
+    // 首先检查括号和引号匹配
+    const checkBalanced = (open: string, close: string) => {
+      let count = 0;
+      for (let i = 0; i < code.length; i++) {
+        if (code[i] === open) count++;
+        if (code[i] === close) count--;
+        if (count < 0) return false;
+      }
+      return count === 0;
+    };
+
+    if (!checkBalanced("(", ")")) errors.push("括号()不匹配");
+    if (!checkBalanced("{", "}")) errors.push("花括号{}不匹配");
+    if (!checkBalanced("[", "]")) errors.push("方括号[]不匹配");
+    
+    // 检查引号匹配 - 更智能的检测
+    let inQuote = null;
+    for (let i = 0; i < code.length; i++) {
+      const char = code[i];
+      if (char === '"' && inQuote === null) {
+        inQuote = '"';
+      } else if (char === '"' && inQuote === '"') {
+        inQuote = null;
+      } else if (char === "'" && inQuote === null) {
+        inQuote = "'";
+      } else if (char === "'" && inQuote === "'") {
+        inQuote = null;
+      }
+    }
+    
+    if (inQuote === '"') errors.push("双引号\"不匹配（缺少结束引号）");
+    if (inQuote === "'") errors.push("单引号'不匹配（缺少结束引号）");
+    
+    // 然后检查缩进和结构
     lines.forEach((line, index) => {
       const trimmed = line.trim();
       const lineNum = index + 1;
@@ -295,10 +329,10 @@ export default function CourseDetail() {
     });
     
     if (errors.length > 0) {
-      return { isValid: false, message: errors.join('；') };
+      return { isValid: false, message: "❌ 语法错误！\n\n代码检查发现以下问题：\n\n" + errors.join('\n') + "\n\n请修复错误后重新运行。" };
     }
     
-    return { isValid: true, message: '代码结构正确' };
+    return { isValid: true, message: '✅ 代码结构正确' };
   };
 
   const resetCode = (chapterId: string, exerciseIdx: number) => {
