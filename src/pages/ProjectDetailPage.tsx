@@ -568,9 +568,7 @@ export default function ProjectDetailPage() {
                                             onClick={(e) => {
                                               e.stopPropagation();
                                               copyCode(exercise.codeTemplate);
-                                              if (!userCode[key]) {
-                                                setUserCode(prev => ({ ...prev, [key]: exercise.codeTemplate }));
-                                              }
+                                              setUserCode(prev => ({ ...prev, [key]: exercise.codeTemplate }));
                                             }}
                                             className="p-1.5 bg-white rounded hover:bg-gray-100 transition-colors text-sm text-gray-600 flex items-center gap-1"
                                           >
@@ -607,7 +605,7 @@ export default function ProjectDetailPage() {
                                         </button>
                                       </div>
                                       <textarea
-                                        value={userCode[key] || exercise.codeTemplate || ''}
+                                        value={userCode[key] || ''}
                                         onChange={(e) => setUserCode(prev => ({ ...prev, [key]: e.target.value }))}
                                         className="w-full h-48 p-3 font-mono text-sm bg-gray-900 text-green-400 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
                                         placeholder="在这里粘贴或编写你的代码..."
