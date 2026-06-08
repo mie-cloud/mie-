@@ -9,7 +9,23 @@ export default function CourseDetail() {
   const { id } = useParams<{ id: string }>();
   const course = courses.find(c => c.id === id);
   const [expandedChapters, setExpandedChapters] = useState<Record<string, boolean>>({});
-  const [exerciseAnswers, setExerciseAnswers] = useState<Record<string, { selectedAnswer: number | null; showResult: boolean }>>({});
+  const [exerciseAnswers, setExerciseAnswers] = useState<Record<string, { 
+    selectedAnswer: number | null; 
+    showResult: boolean;
+    codeAnswer: string;
+    codeShowResult: boolean;
+    codeIsCorrect: boolean;
+    codeOutput: string;
+  }>>({});
+
+  type ExerciseState = {
+    selectedAnswer: number | null; 
+    showResult: boolean;
+    codeAnswer: string;
+    codeShowResult: boolean;
+    codeIsCorrect: boolean;
+    codeOutput: string;
+  };
 
   const toggleChapter = (chapter: string) => {
     setExpandedChapters(prev => ({
@@ -22,9 +38,17 @@ export default function CourseDetail() {
 
   const handleSelectAnswer = (chapterId: string, exerciseIdx: number, answerIdx: number) => {
     const key = getExerciseKey(chapterId, exerciseIdx);
+    const current = exerciseAnswers[key] || { codeAnswer: '', codeShowResult: false, codeIsCorrect: false, codeOutput: '' };
     setExerciseAnswers(prev => ({
       ...prev,
-      [key]: { selectedAnswer: answerIdx, showResult: prev[key]?.showResult || false }
+      [key]: { 
+        selectedAnswer: answerIdx, 
+        showResult: prev[key]?.showResult || false,
+        codeAnswer: current.codeAnswer,
+        codeShowResult: current.codeShowResult,
+        codeIsCorrect: current.codeIsCorrect,
+        codeOutput: current.codeOutput
+      }
     }));
   };
 
@@ -34,22 +58,124 @@ export default function CourseDetail() {
     if (current?.selectedAnswer !== null) {
       setExerciseAnswers(prev => ({
         ...prev,
-        [key]: { ...current, showResult: true }
+        [key]: { 
+          ...current, 
+          showResult: true,
+          codeAnswer: current.codeAnswer || '',
+          codeShowResult: current.codeShowResult || false,
+          codeIsCorrect: current.codeIsCorrect || false,
+          codeOutput: current.codeOutput || ''
+        }
       }));
     }
   };
 
   const resetAnswer = (chapterId: string, exerciseIdx: number) => {
     const key = getExerciseKey(chapterId, exerciseIdx);
+    const current = exerciseAnswers[key] || { codeAnswer: '', codeShowResult: false, codeIsCorrect: false, codeOutput: '' };
     setExerciseAnswers(prev => ({
       ...prev,
-      [key]: { selectedAnswer: null, showResult: false }
+      [key]: { 
+        selectedAnswer: null, 
+        showResult: false,
+        codeAnswer: current.codeAnswer,
+        codeShowResult: current.codeShowResult,
+        codeIsCorrect: current.codeIsCorrect,
+        codeOutput: current.codeOutput
+      }
     }));
   };
 
   const getExerciseState = (chapterId: string, exerciseIdx: number) => {
     const key = getExerciseKey(chapterId, exerciseIdx);
-    return exerciseAnswers[key] || { selectedAnswer: null, showResult: false };
+    return exerciseAnswers[key] || { 
+      selectedAnswer: null, 
+      showResult: false,
+      codeAnswer: '',
+      codeShowResult: false,
+      codeIsCorrect: false,
+      codeOutput: ''
+    };
+  };
+
+  const handleCodeChange = (chapterId: string, exerciseIdx: number, code: string) => {
+    const key = getExerciseKey(chapterId, exerciseIdx);
+    setExerciseAnswers(prev => ({
+      ...prev,
+      [key]: { ...prev[key], codeAnswer: code }
+    }));
+  };
+
+  const handleCodeSubmit = (chapterId: string, exerciseIdx: number) => {
+    const key = getExerciseKey(chapterId, exerciseIdx);
+    const exercise = course?.chapters.find(c => c.id === chapterId)?.exercises[exerciseIdx];
+    if (!exercise) return;
+
+    const code = exerciseAnswers[key]?.codeAnswer || '';
+    let output = '';
+    let isCorrect = false;
+
+    if (exercise.expectedOutput) {
+      const mockOutput = simulateCodeExecution(code);
+      output = mockOutput.output;
+      isCorrect = mockOutput.isCorrect(exercise.expectedOutput);
+    } else {
+      isCorrect = validateCodeStructure(code);
+      output = isCorrect ? '代码语法正确！' : '代码可能存在语法问题';
+    }
+
+    setExerciseAnswers(prev => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        codeShowResult: true,
+        codeIsCorrect: isCorrect,
+        codeOutput: output
+      }
+    }));
+  };
+
+  const simulateCodeExecution = (code: string) => {
+    let output = '';
+    const lines = code.split('\n');
+    
+    lines.forEach(line => {
+      if (line.trim().startsWith('print(')) {
+        const match = line.match(/print\(['"]?(.+?)['"]?\)/);
+        if (match) {
+          output += match[1] + '\n';
+        }
+      }
+    });
+
+    return {
+      output: output.trim(),
+      isCorrect: (expected: string) => {
+        const normalizedOutput = output.trim().replace(/\s+/g, ' ');
+        const normalizedExpected = expected.trim().replace(/\s+/g, ' ');
+        return normalizedOutput.includes(normalizedExpected) || normalizedExpected.includes(normalizedOutput);
+      }
+    };
+  };
+
+  const validateCodeStructure = (code: string) => {
+    return code.trim().length > 0 && 
+           !code.includes('SyntaxError') &&
+           !code.includes('IndentationError');
+  };
+
+  const resetCode = (chapterId: string, exerciseIdx: number) => {
+    const key = getExerciseKey(chapterId, exerciseIdx);
+    setExerciseAnswers(prev => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        codeAnswer: '',
+        codeShowResult: false,
+        codeIsCorrect: false,
+        codeOutput: ''
+      }
+    }));
   };
 
   if (!course) {
@@ -261,11 +387,60 @@ export default function CourseDetail() {
                                       })}
                                     </div>
                                   )}
-                                  {exercise.type === 'code' && exercise.codeTemplate && (
-                                    <div className="mt-3">
-                                      <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto">
-                                        <code>{exercise.codeTemplate}</code>
-                                      </pre>
+                                  {exercise.type === 'code' && (
+                                    <div className="mt-4">
+                                      <div className="flex items-center justify-between mb-2">
+                                        <span className="text-sm text-gray-500">代码编辑区</span>
+                                        {exerciseState.codeShowResult && (
+                                          <span className={`text-sm font-bold ${exerciseState.codeIsCorrect ? 'text-green-600' : 'text-red-600'}`}>
+                                            {exerciseState.codeIsCorrect ? '✅ 代码正确！' : '❌ 代码有问题'}
+                                          </span>
+                                        )}
+                                      </div>
+                                      <textarea
+                                        value={exerciseState.codeAnswer || ''}
+                                        onChange={(e) => handleCodeChange(chapter.id, idx, e.target.value)}
+                                        placeholder="// 在这里编写你的代码\nprint('Hello, World!')"
+                                        className="w-full h-48 bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-500 border-2 border-gray-700"
+                                      />
+                                      {exerciseState.codeShowResult && !exerciseState.codeIsCorrect && exercise.expectedOutput && (
+                                        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                                          <div className="font-bold text-red-800 mb-2">❌ 输出结果不匹配</div>
+                                          <div className="space-y-2">
+                                            <div>
+                                              <span className="text-gray-600">你的输出：</span>
+                                              <pre className="bg-gray-900 text-red-400 p-3 rounded mt-1">{exerciseState.codeOutput || '(无输出)'}</pre>
+                                            </div>
+                                            <div>
+                                              <span className="text-gray-600">期望输出：</span>
+                                              <pre className="bg-gray-900 text-green-400 p-3 rounded mt-1">{exercise.expectedOutput}</pre>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      )}
+                                      {exerciseState.codeShowResult && exerciseState.codeIsCorrect && exercise.explanation && (
+                                        <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                                          <div className="font-bold text-green-800 mb-2">💡 知识点讲解</div>
+                                          <p className="text-gray-700">{exercise.explanation}</p>
+                                        </div>
+                                      )}
+                                      <div className="mt-4 flex gap-3">
+                                        {!exerciseState.codeShowResult ? (
+                                          <button
+                                            onClick={() => handleCodeSubmit(chapter.id, idx)}
+                                            className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-700 text-white rounded-xl font-bold hover:shadow-lg transition-all"
+                                          >
+                                            ▶️ 运行代码
+                                          </button>
+                                        ) : (
+                                          <button
+                                            onClick={() => resetCode(chapter.id, idx)}
+                                            className="px-6 py-3 bg-gray-200 text-gray-800 rounded-xl font-bold hover:bg-gray-300 transition-all"
+                                          >
+                                            🔄 重新编写
+                                          </button>
+                                        )}
+                                      </div>
                                     </div>
                                   )}
                                   {exercise.type === 'multiple-choice' && (

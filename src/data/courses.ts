@@ -8,6 +8,8 @@ export interface Chapter {
     options?: string[];
     correctAnswer?: string;
     codeTemplate?: string;
+    expectedOutput?: string;
+    explanation?: string;
   }[];
 }
 
@@ -75,17 +77,23 @@ export const courses: Course[] = [
           {
             type: 'code',
             question: '编写一个程序，输出 "Hello, Python!"',
-            codeTemplate: 'print("Hello, Python!")'
+            codeTemplate: 'print("Hello, Python!")',
+            expectedOutput: 'Hello, Python!',
+            explanation: 'print() 是 Python 中最常用的输出函数，用于在控制台打印内容。括号内的字符串会被输出到屏幕上。'
           },
           {
             type: 'code',
             question: '编写一个程序，分别输出你的姓名、年龄和专业',
-            codeTemplate: 'name = "你的姓名"\nage = "你的年龄"\nmajor = "你的专业"\nprint("姓名：", name)\nprint("年龄：", age)\nprint("专业：", major)'
+            codeTemplate: 'name = "你的姓名"\nage = "你的年龄"\nmajor = "你的专业"\nprint("姓名：", name)\nprint("年龄：", age)\nprint("专业：", major)',
+            expectedOutput: '姓名： 你的姓名\n年龄： 你的年龄\n专业： 你的专业',
+            explanation: '在 Python 中，我们使用等号 = 来定义变量。变量可以存储不同类型的值，如字符串、数字等。print() 函数可以同时输出多个值，用逗号分隔。'
           },
           {
             type: 'code',
             question: '使用多行注释写一段关于你学习 Python 目标的说明',
-            codeTemplate: '"""\n这是多行注释\n在这里写下你学习 Python 的目标\n"""'
+            codeTemplate: '"""\n这是多行注释\n在这里写下你学习 Python 的目标\n"""',
+            expectedOutput: '',
+            explanation: 'Python 中的多行注释使用三个双引号 """ 包裹。多行注释不会被执行，用于给代码添加说明文档。'
           }
         ]
       },
