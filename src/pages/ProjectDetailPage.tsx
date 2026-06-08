@@ -392,29 +392,113 @@ export default function ProjectDetailPage() {
   };
 
   const checkCodeCorrectness = (code: string, exercise: any) => {
-    const cleanCode = code.replace(/\s+/g, ' ').toLowerCase();
-    
-    if (exercise.expectedOutput) {
-      const expected = exercise.expectedOutput.toLowerCase();
-      if (cleanCode.includes(expected.slice(0, 20))) {
-        return true;
-      }
-    }
+    if (!code || code.trim().length < 10) return false;
 
-    const keywords = ['print', 'import', 'pandas', 'numpy', 'def', 'return'];
+    const cleanCode = code.replace(/\s+/g, ' ').toLowerCase().trim();
+    const templateCode = exercise.codeTemplate?.toLowerCase().replace(/\s+/g, ' ') || '';
+    
     let score = 0;
-    keywords.forEach(keyword => {
-      if (cleanCode.includes(keyword)) score++;
-    });
+    let reasons: string[] = [];
 
     if (exercise.codeTemplate) {
-      const template = exercise.codeTemplate.toLowerCase().substring(0, 50);
-      if (cleanCode.includes(template)) {
-        return true;
+      const templateLines = exercise.codeTemplate.split('\n').filter(l => l.trim());
+      const userLines = code.split('\n').filter(l => l.trim());
+      
+      let matchCount = 0;
+      templateLines.forEach(templateLine => {
+        const cleanTemplate = templateLine.toLowerCase().trim();
+        if (cleanTemplate.length > 10) {
+          if (userLines.some(userLine => userLine.toLowerCase().includes(cleanTemplate.slice(0, 15)))) {
+            matchCount++;
+          }
+        }
+      });
+      
+      const matchRatio = matchCount / Math.max(templateLines.length, 1);
+      if (matchRatio >= 0.5) {
+        score += 30;
+        reasons.push('代码结构与示例匹配度高');
+      } else if (matchRatio >= 0.3) {
+        score += 15;
+        reasons.push('部分代码结构匹配');
       }
     }
 
-    return score >= 1 && code.length > 20;
+    if (exercise.expectedOutput) {
+      const expectedKeywords = exercise.expectedOutput.toLowerCase().split(' ').filter(w => w.length > 3);
+      let foundCount = 0;
+      expectedKeywords.forEach(keyword => {
+        if (cleanCode.includes(keyword)) foundCount++;
+      });
+      if (foundCount >= Math.min(2, expectedKeywords.length)) {
+        score += 25;
+        reasons.push('包含预期的关键内容');
+      }
+    }
+
+    const importantKeywords: Record<string, number> = {
+      'import': 10,
+      'print': 8,
+      'def': 12,
+      'return': 10,
+      'for': 8,
+      'if': 8,
+      'else': 6,
+      'pandas': 15,
+      'numpy': 15,
+      'pd.': 12,
+      'np.': 12
+    };
+
+    let keywordScore = 0;
+    Object.entries(importantKeywords).forEach(([keyword, points]) => {
+      if (cleanCode.includes(keyword)) {
+        keywordScore += points;
+        if (templateCode.includes(keyword)) {
+          keywordScore += 5;
+        }
+      }
+    });
+    score += Math.min(keywordScore, 30);
+
+    const hasComment = code.includes('#') || code.includes('"""') || code.includes("'''");
+    if (hasComment) {
+      score += 5;
+      reasons.push('有注释说明');
+    }
+
+    const hasBasicStructure = code.includes('(') && code.includes(')');
+    const hasPrint = cleanCode.includes('print');
+    const hasVariables = /[a-z_][a-z0-9_]*\s*=/.test(code);
+    
+    if (hasBasicStructure) score += 5;
+    if (hasPrint && (exercise.expectedOutput || exercise.codeTemplate?.includes('print'))) score += 5;
+    if (hasVariables) score += 5;
+
+    let penalty = 0;
+    const emptyLines = code.split('\n').filter(l => !l.trim()).length;
+    if (emptyLines > 10) penalty += 5;
+
+    const totalLength = code.trim().length;
+    if (totalLength < 30) penalty += 20;
+    else if (totalLength < 50) penalty += 10;
+
+    const finalScore = Math.max(0, score - penalty);
+    
+    if (exercise.codeTemplate && templateCode.length > 50) {
+      let exactMatches = 0;
+      const templateParts = templateCode.split(/[\s,()]+/).filter(p => p.length > 3);
+      templateParts.forEach(part => {
+        if (cleanCode.includes(part)) exactMatches++;
+      });
+      
+      if (exactMatches >= templateParts.length * 0.4) {
+        finalScore += 15;
+        reasons.push('核心代码元素匹配');
+      }
+    }
+
+    return finalScore >= 40;
   };
 
   return (
