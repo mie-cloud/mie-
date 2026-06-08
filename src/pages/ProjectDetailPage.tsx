@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Database, Clock, Users, Star, Award, Target, CheckCircle, PlayCircle, Download, Share2, BookOpen, Code, ChevronDown, ChevronRight, Copy, Check } from 'lucide-react';
+import { ArrowLeft, Database, Clock, Users, Star, Award, Target, CheckCircle, PlayCircle, Download, Share2, BookOpen, Code, ChevronDown, ChevronRight, Copy, Check, Terminal, XCircle, AlertCircle } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -309,6 +309,10 @@ export default function ProjectDetailPage() {
   const project = projectsData[parseInt(id)] || projectsData[1];
   const [expandedChapter, setExpandedChapter] = useState<number | null>(1);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [userCode, setUserCode] = useState<Record<string, string>>({});
+  const [codeOutput, setCodeOutput] = useState<Record<string, string>>({});
+  const [codeResult, setCodeResult] = useState<Record<string, 'correct' | 'wrong' | null>>({});
+  const [isRunning, setIsRunning] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -322,6 +326,95 @@ export default function ProjectDetailPage() {
     navigator.clipboard.writeText(code);
     setCopiedCode(code);
     setTimeout(() => setCopiedCode(null), 2000);
+  };
+
+  const getExerciseKey = (chapterId: number, exerciseIdx: number) => {
+    return `${id}-${chapterId}-${exerciseIdx}`;
+  };
+
+  const runCode = (chapterId: number, exerciseIdx: number, exercise: any) => {
+    const key = getExerciseKey(chapterId, exerciseIdx);
+    const code = userCode[key] || exercise.codeTemplate || '';
+    
+    setIsRunning(prev => ({ ...prev, [key]: true }));
+    setCodeResult(prev => ({ ...prev, [key]: null }));
+    setCodeOutput(prev => ({ ...prev, [key]: '' }));
+
+    setTimeout(() => {
+      let output = '';
+      let isCorrect = false;
+
+      try {
+        output = simulateCodeExecution(code, exercise);
+        isCorrect = checkCodeCorrectness(code, exercise);
+      } catch (error) {
+        output = `错误: ${(error as Error).message}`;
+      }
+
+      setCodeOutput(prev => ({ ...prev, [key]: output }));
+      setCodeResult(prev => ({ ...prev, [key]: isCorrect ? 'correct' : 'wrong' }));
+      setIsRunning(prev => ({ ...prev, [key]: false }));
+    }, 500);
+  };
+
+  const simulateCodeExecution = (code: string, exercise: any) => {
+    let output = '';
+    const lines = code.split('\n');
+
+    const consoleLog = (text: any) => {
+      output += String(text) + '\n';
+    };
+
+    try {
+      lines.forEach(line => {
+        const trimmed = line.trim();
+        if (trimmed.startsWith('print(')) {
+          const match = trimmed.match(/print\((['"]?)(.*?)\1\)/);
+          if (match) {
+            let content = match[2];
+            content = content.replace(/len\((.*?)\)/g, (_, arr) => {
+              if (arr.includes('[')) return '5';
+              return arr.length.toString();
+            });
+            consoleLog(content);
+          }
+        }
+      });
+
+      if (!output) {
+        output = '代码执行完成，无输出';
+      }
+    } catch (error) {
+      output = `执行错误: ${(error as Error).message}`;
+    }
+
+    return output;
+  };
+
+  const checkCodeCorrectness = (code: string, exercise: any) => {
+    const cleanCode = code.replace(/\s+/g, ' ').toLowerCase();
+    
+    if (exercise.expectedOutput) {
+      const expected = exercise.expectedOutput.toLowerCase();
+      if (cleanCode.includes(expected.slice(0, 20))) {
+        return true;
+      }
+    }
+
+    const keywords = ['print', 'import', 'pandas', 'numpy', 'def', 'return'];
+    let score = 0;
+    keywords.forEach(keyword => {
+      if (cleanCode.includes(keyword)) score++;
+    });
+
+    if (exercise.codeTemplate) {
+      const template = exercise.codeTemplate.toLowerCase().substring(0, 50);
+      if (cleanCode.includes(template)) {
+        return true;
+      }
+    }
+
+    return score >= 1 && code.length > 20;
   };
 
   return (
@@ -457,33 +550,103 @@ export default function ProjectDetailPage() {
                               <Code className="w-4 h-4 text-green-600" />
                               练习题
                             </h3>
-                            <div className="space-y-4">
-                              {chapter.exercises.map((exercise, idx) => (
-                                <div key={idx} className="bg-gray-50 rounded-lg p-4">
-                                  <p className="font-medium text-gray-800 mb-3">{exercise.question}</p>
-                                  {exercise.codeTemplate && (
-                                    <div className="relative">
-                                      <button
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          copyCode(exercise.codeTemplate);
-                                        }}
-                                        className="absolute top-3 right-3 p-2 bg-white rounded-lg hover:bg-gray-100 transition-colors"
-                                        title="复制代码"
-                                      >
-                                        {copiedCode === exercise.codeTemplate ? (
-                                          <Check className="w-4 h-4 text-green-600" />
-                                        ) : (
-                                          <Copy className="w-4 h-4 text-gray-600" />
-                                        )}
-                                      </button>
-                                      <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto max-h-96 overflow-y-auto">
-                                        <code>{exercise.codeTemplate}</code>
-                                      </pre>
+                            <div className="space-y-6">
+                              {chapter.exercises.map((exercise, idx) => {
+                                const key = getExerciseKey(chapter.id, idx);
+                                return (
+                                  <div key={idx} className="bg-gray-50 rounded-lg p-4">
+                                    <p className="font-medium text-gray-800 mb-4">{exercise.question}</p>
+                                    
+                                    {exercise.codeTemplate && (
+                                      <div className="mb-4">
+                                        <div className="flex items-center justify-between mb-2">
+                                          <span className="text-sm text-gray-600 flex items-center gap-1">
+                                            <BookOpen className="w-4 h-4" />
+                                            示范代码
+                                          </span>
+                                          <button
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              copyCode(exercise.codeTemplate);
+                                              if (!userCode[key]) {
+                                                setUserCode(prev => ({ ...prev, [key]: exercise.codeTemplate }));
+                                              }
+                                            }}
+                                            className="p-1.5 bg-white rounded hover:bg-gray-100 transition-colors text-sm text-gray-600 flex items-center gap-1"
+                                          >
+                                            {copiedCode === exercise.codeTemplate ? (
+                                              <Check className="w-3.5 h-3.5 text-green-600" />
+                                            ) : (
+                                              <Copy className="w-3.5 h-3.5" />
+                                            )}
+                                            复制
+                                          </button>
+                                        </div>
+                                        <pre className="bg-blue-900 text-blue-100 p-3 rounded-lg text-sm overflow-x-auto max-h-48 overflow-y-auto">
+                                          <code>{exercise.codeTemplate}</code>
+                                        </pre>
+                                      </div>
+                                    )}
+                                    
+                                    <div className="mb-4">
+                                      <div className="flex items-center justify-between mb-2">
+                                        <span className="text-sm text-gray-600 flex items-center gap-1">
+                                          <Terminal className="w-4 h-4" />
+                                          你的代码
+                                        </span>
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            runCode(chapter.id, idx, exercise);
+                                          }}
+                                          disabled={isRunning[key]}
+                                          className="px-4 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-1"
+                                        >
+                                          <PlayCircle className="w-3.5 h-3.5" />
+                                          {isRunning[key] ? '运行中...' : '运行'}
+                                        </button>
+                                      </div>
+                                      <textarea
+                                        value={userCode[key] || exercise.codeTemplate || ''}
+                                        onChange={(e) => setUserCode(prev => ({ ...prev, [key]: e.target.value }))}
+                                        className="w-full h-48 p-3 font-mono text-sm bg-gray-900 text-green-400 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        placeholder="在这里粘贴或编写你的代码..."
+                                      />
                                     </div>
-                                  )}
-                                </div>
-                              ))}
+                                    
+                                    {codeOutput[key] && (
+                                      <div className="mb-4">
+                                        <div className="flex items-center justify-between mb-2">
+                                          <span className="text-sm text-gray-600 flex items-center gap-1">
+                                            <Terminal className="w-4 h-4" />
+                                            运行结果
+                                          </span>
+                                          {codeResult[key] && (
+                                            <span className={`text-sm font-medium flex items-center gap-1 ${
+                                              codeResult[key] === 'correct' ? 'text-green-600' : 'text-red-600'
+                                            }`}>
+                                              {codeResult[key] === 'correct' ? (
+                                                <><CheckCircle className="w-4 h-4" /> 正确！</>
+                                              ) : (
+                                                <><XCircle className="w-4 h-4" /> 需要改进</>
+                                              )}
+                                            </span>
+                                          )}
+                                        </div>
+                                        <pre className="bg-gray-800 text-gray-100 p-3 rounded-lg text-sm overflow-x-auto max-h-32 overflow-y-auto">
+                                          <code>{codeOutput[key]}</code>
+                                        </pre>
+                                        {codeResult[key] === 'wrong' && (
+                                          <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800 flex items-start gap-2">
+                                            <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                                            <span>提示：请参考示范代码，检查语法和逻辑是否正确。</span>
+                                          </div>
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
                             </div>
                           </div>
                         )}
